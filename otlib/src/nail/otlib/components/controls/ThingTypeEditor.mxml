@@ -1,0 +1,1085 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////////////
+// 
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+// 
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+// 
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
+///////////////////////////////////////////////////////////////////////////////////
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:nail="library://ns.nail.com/naillib"
+		 xmlns:otlib="library://ns.nail.com/otlib"
+		 minWidth="300"
+		 minHeight="0"
+		 fontSize="11"
+		 creationComplete="creationCompleteHandler(event)">
+	
+	<fx:Metadata>
+		[Event(name="thingChange", type="nail.otlib.events.ThingEditorEvent")]
+		[Event(name="thingPropertyChange", type="nail.otlib.events.ThingEditorEvent")]
+		[Event(name="spriteDoubleClick", type="nail.otlib.events.ThingEditorEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.core.DragSource;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.managers.DragManager;
+			
+			import spark.components.Button;
+			
+			import nail.otlib.components.skins.SpriteButtonSkin;
+			import nail.otlib.events.ThingEditorEvent;
+			import nail.otlib.sprites.Sprite;
+			import nail.otlib.things.BindableThingType;
+			import nail.otlib.utils.SpriteData;
+			import nail.otlib.utils.ThingData;
+			
+			//--------------------------------------------------------------------------
+			//
+			// PROPERTIES
+			//
+			//--------------------------------------------------------------------------
+			
+			[Bindable]
+			private var _thingBinding : BindableThingType;
+			
+			[Bindable]
+			private var _thingData : ThingData;
+			
+			private var _thingDataChanged : Boolean;
+			
+			private var _changed : Boolean;
+			
+			private var _loading : Boolean;
+			
+			private var _rect : Rectangle;
+			
+			private var _point : Point;
+			
+			//--------------------------------------------------------------------------
+			//
+			// METHODS
+			//
+			//--------------------------------------------------------------------------
+			
+			//--------------------------------------
+			// Public
+			//--------------------------------------
+			
+			public function saveChanges() : Boolean
+			{
+				if (_thingData != null && _changed)
+				{
+					if (_thingBinding.copyTo(_thingData.thing))
+					{
+						_changed = false;
+						dispatchEvent(new ThingEditorEvent(ThingEditorEvent.THING_PROPERTY_CHANGE, this.thingData));
+						return true;
+					}
+				}
+				return false;
+			}	
+			
+			//--------------------------------------
+			// Override Protected
+			//--------------------------------------
+			
+			override protected function commitProperties() : void
+			{
+				super.commitProperties();
+				
+				if (_thingDataChanged)
+				{
+					setThingData(_thingData);
+					_thingDataChanged = false;
+				}
+			}
+			
+			//--------------------------------------
+			// Private
+			//--------------------------------------
+			
+			private function setThingData(data:ThingData) : void
+			{
+				_loading = true;
+				
+				_thingBinding.reset();
+				blendLayerCheckBox.selected = false;
+				animationSlider.value = 0;
+				
+				if (data != null)
+				{
+					_thingBinding.copyFrom(data);
+				}
+				
+				_changed = false;
+				_loading = false;
+				
+				updateView();
+			}
+			
+			private function updateView() : void
+			{
+				var size : uint;
+				var width : int;
+				var height : int;
+				var cropsize : int;
+				var layers : int;
+				var patternX : int;
+				var patternY : int;
+				var patternZ : int;
+				var frames : int;
+				var x : int;
+				var y : int;
+				var z : int;
+				var l : int;
+				var f : int;
+				var w : int;
+				var h : int;
+				var pixelsWidth : int;
+				var pixelsHeight : int;
+				var fx : int;
+				var fy : int;
+				var px : int;
+				var py : int;
+				var bitmapWidth : Number;
+				var bitmapHeight : Number;
+				var bitmap : BitmapData;
+				var index : int;
+				var spriteIndex : int;
+				var id : uint;
+				
+				removeButtons();
+				
+				if (this.thingData == null) 
+				{
+					return;
+				}
+				
+				width    = _thingBinding.width;
+				height   = _thingBinding.height;
+				cropsize = _thingBinding.exactSize;
+				layers   = _thingBinding.layers;
+				patternX = _thingBinding.patternX;
+				patternY = _thingBinding.patternY;
+				patternZ = _thingBinding.patternZ;
+				frames   = _thingBinding.frames;
+				size     = nail.otlib.sprites.Sprite.SPRITE_PIXELS;
+				
+				// -----< Measure and create bitmap and rect list>-----
+				bitmapWidth  = Math.max(size, (patternX * width) * size);
+				bitmapHeight = Math.max(size, (patternY * height) * size);
+				pixelsWidth  = width * size;
+				pixelsHeight = height * size;
+				bitmap = new BitmapData(bitmapWidth, bitmapHeight, true, 0x00FF00FF);
+				
+				f = animationSlider.value;
+				l = blendLayerCheckBox.selected ? 1 : 0;
+				z = mountSlider.value;
+				
+				for (y = 0; y < patternY; y++)
+				{
+					for (x = 0; x < patternX; x++)
+					{
+						fx = x * pixelsWidth;
+						fy = y * pixelsHeight;
+						
+						for (w = 0; w < width; w++)
+						{
+							for (h = 0; h < height; h++)
+							{
+								index = getSpriteIndex(_thingBinding, w, h, l, x, y, z, f);
+								id = _thingBinding.spriteIndex[index];
+								px = ((width - w - 1) * size) + fx;
+								py = ((height - h - 1) * size) + fy;
+								copyPixels(index, bitmap, px, py);
+								addButton(index, id, px, py);
+							}
+						}
+					}
+				}
+				
+				if (bitmapView.source)
+				{
+					bitmapView.source.dispose();
+					bitmapView.source = null;
+				}
+				
+				bitmapView.source = bitmap;
+			}
+			
+			private function addButton(index:uint, id:uint, x:uint, y:uint) : void
+			{
+				var button : Button;
+				button = new Button();	
+				button.width = 32;
+				button.height = 32;
+				button.alpha = showGridCheckBox.selected ? 1 : 0;
+				button.label = index.toString();
+				button.toolTip = id.toString(); 
+				button.setStyle("fontSize", 10);
+				button.setStyle("skinClass", SpriteButtonSkin);
+				buttonsContainer.addElement(button);
+				button.move(x, y);
+				button.doubleClickEnabled = true;
+				button.addEventListener(DragEvent.DRAG_ENTER, buttonDragEnterHandler);
+				button.addEventListener(DragEvent.DRAG_EXIT, buttonDragExitHandler);
+				button.addEventListener(DragEvent.DRAG_DROP, buttonDragDropHandler);
+				button.addEventListener(MouseEvent.DOUBLE_CLICK, buttonDoubleClickHandler);
+			}
+			
+			private function removeButtons() : void
+			{
+				var length : uint;
+				var i : uint;
+				var button : Button;
+				
+				length = buttonsContainer.numElements;
+				for (i = 0; i < length; i++)
+				{
+					button = buttonsContainer.getElementAt(i) as Button;
+					button.removeEventListener(DragEvent.DRAG_ENTER, buttonDragEnterHandler);
+					button.removeEventListener(DragEvent.DRAG_DROP, buttonDragDropHandler);	
+					button.removeEventListener(MouseEvent.DOUBLE_CLICK, buttonDoubleClickHandler);
+				}
+				buttonsContainer.removeAllElements();
+			}
+			
+			private function changeButtonsVisible(visible:Boolean) : void
+			{
+				var length : uint;
+				var i : uint;
+				var button : Button;
+				
+				length = buttonsContainer.numElements;
+				for (i = 0; i < length; i++)
+				{
+					button = buttonsContainer.getElementAt(i) as Button;
+					button.alpha = visible ? 1 : 0;
+				}
+			}
+			
+			private function getSpriteIndex(thing:BindableThingType, w:int, h:int, l:int, x:int, y:int, z:int, f:int) : uint
+			{
+				return ((((((f % thing.frames)
+					* thing.patternZ + z)
+					* thing.patternY + y)
+					* thing.patternX + x)
+					* thing.layers + l)
+					* thing.height + h)
+					* thing.width + w; 
+			}
+			
+			private function copyPixels(index:uint, bitmap:BitmapData, x:uint, y:uint) : void
+			{
+				var bmp : BitmapData;
+				
+				bmp = _thingBinding.getSpriteBitmap(index);
+				if (bmp != null)
+				{
+					_point.x = x;
+					_point.y = y;
+					bitmap.copyPixels(bmp, _rect, _point);
+				}
+			}
+			
+			//--------------------------------------
+			// Event Handlers
+			//--------------------------------------
+			
+			protected function creationCompleteHandler(event:FlexEvent) : void
+			{
+				_thingBinding = new BindableThingType();
+				_thingBinding.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, thingPropertyChangeHandler);
+				_rect = new Rectangle(0, 0, 32, 32);
+				_point = new Point();
+			}
+			
+			//--------------------------------------
+			// Event Handlers
+			//--------------------------------------
+			
+			protected function buttonDragEnterHandler(event:DragEvent) : void
+			{
+				var button : Button;
+				button = event.target as Button;
+				if (_thingBinding && button)
+				{
+					DragManager.acceptDragDrop(button);
+					button.alpha = 1;
+				}
+			}
+			
+			protected function buttonDragExitHandler(event:DragEvent) : void
+			{
+				var button : Button;
+				button = event.target as Button;
+				if (button && !showGridCheckBox.selected)
+				{
+					button.alpha = 0;
+				}
+			}
+			
+			protected function buttonDragDropHandler(event:DragEvent) : void
+			{
+				var source : DragSource;
+				var spriteData : SpriteData;
+				var button : Button;
+				var index : int;
+				
+				button = event.target as Button;
+				if (!button || !_thingBinding)
+				{
+					return;
+				}
+				
+				if(!showGridCheckBox.selected) { button.alpha = 0; }
+				index = uint(button.label);
+				source = event.dragSource;
+				spriteData = source.dataForFormat(source.formats[0])[0];
+				if (spriteData != null)
+				{
+					_thingBinding.setSprite(index, spriteData);
+					updateView();
+				}
+			}
+			
+			protected function buttonDoubleClickHandler(event:MouseEvent) : void
+			{
+				var index : uint;
+				index = uint(event.target.toolTip);
+				dispatchEvent(new ThingEditorEvent(ThingEditorEvent.SPRITE_DOUBLE_CLICK, this.thingData, index));
+			}
+			
+			protected function thingPropertyChangeHandler(event:PropertyChangeEvent) : void
+			{
+				if (!_loading)
+				{
+					_changed = true;
+					dispatchEvent(new ThingEditorEvent(ThingEditorEvent.THING_PROPERTY_CHANGE, this.thingData));
+				}
+			}
+			
+			protected function textureUpdate(event:Event) : void
+			{
+				var totalSprites : uint;
+				totalSprites = _thingBinding.width * _thingBinding.height * _thingBinding.layers * _thingBinding.patternX * _thingBinding.patternY * _thingBinding.patternZ * _thingBinding.frames;			
+				_thingBinding.setSpritesCount(totalSprites);
+				updateView();
+			}
+			
+			//--------------------------------------
+			// Getters / Setters 
+			//--------------------------------------
+			
+			public function get thingData() : ThingData
+			{
+				return _thingData;
+			}
+
+			public function set thingData(value:ThingData) : void
+			{
+				if (_thingData != value)
+				{
+					_thingData = value;
+					_thingDataChanged = true;
+					_changed = false;
+					invalidateProperties();
+				
+					dispatchEvent(new ThingEditorEvent(ThingEditorEvent.THING_CHANGE, this.thingData));
+				}
+			}
+			
+			public function get changed() : Boolean
+			{
+				return _thingData ? _changed : false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Scroller width="100%"
+				height="100%">
+		<s:Group>
+			<s:layout>
+				<s:VerticalLayout paddingLeft="10"
+								  paddingRight="10"
+								  paddingTop="10"
+								  paddingBottom="10"/>
+			</s:layout>
+			
+			<s:VGroup gap="10"
+					  width="100%"
+					  height="100%">
+				
+				<!-- appearance group -->
+				<nail:GroupBox id="appearanceGroupBox"
+							   label="Appearance"
+							   width="100%"
+							   minHeight="470">
+					<nail:layout>
+						<s:VerticalLayout paddingLeft="10"
+										  paddingRight="10"
+										  paddingTop="10"
+										  paddingBottom="10"
+										  gap="10"/>
+					</nail:layout>
+					
+					<s:Group width="100%"
+							 height="100%">	
+						<s:Group verticalCenter="0" 
+							     horizontalCenter="0">
+							<s:Rect left="0" right="0" top="0" bottom="0">
+								<s:fill>
+									<s:SolidColor color="0x636363"/>
+								</s:fill>
+							</s:Rect>
+							<s:Image id="bitmapView"/>	
+							<s:Group id="buttonsContainer"
+									 width="{bitmapView.width}"
+									 height="{bitmapView.height}"/>
+						</s:Group>
+					</s:Group>
+					
+					<s:Line width="100%">
+						<s:stroke>
+							<s:SolidColorStroke color="0x353535"/>
+						</s:stroke>
+					</s:Line>
+					
+					<s:HGroup width="100%"
+							  verticalAlign="middle"
+							  horizontalAlign="right"
+							  visible="{_thingBinding.frames > 1}">
+						<s:Label text="Animation:"/>
+						<s:HSlider id="animationSlider"
+								   maximum="{_thingBinding.frames - 1}"
+								   change="updateView()"/>	
+					</s:HGroup>
+					
+					<s:HGroup width="100%"
+							  verticalAlign="middle"
+							  horizontalAlign="right"
+							  visible="{_thingBinding.patternZ > 1}">
+						<s:Label text="Mount:"/>
+						<s:HSlider id="mountSlider"
+								   maximum="{_thingBinding.patternZ - 1}"
+								   change="updateView()"/>
+					</s:HGroup>	
+					
+					<s:CheckBox id="blendLayerCheckBox"
+								label="Show Blend Layer"
+								visible="{_thingBinding.layers > 1}"
+								change="updateView()"/>
+					
+					<s:CheckBox id="showGridCheckBox"
+								label="Show Grid"
+								change="{changeButtonsVisible(showGridCheckBox.selected)}"/>
+				</nail:GroupBox>
+				
+				<!-- patterns group -->
+				<nail:GroupBox id="patternsGroupBox"
+							   label="Texture"
+							   width="100%">
+					
+					<nail:layout>
+						<s:TileLayout requestedColumnCount="2"
+									  paddingLeft="80"
+									  paddingRight="10"
+									  paddingTop="10"
+									  paddingBottom="10"/>
+					</nail:layout>
+					<s:Label text="Width:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="widthNumericStepper"
+									  minimum="1"
+									  value="{_thingBinding.width}"
+									  change="{_thingBinding.width = widthNumericStepper.value}; textureUpdate(event)"/>
+					<s:Label text="Height:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="heightNumericStepper"
+									  minimum="1"
+									  value="{_thingBinding.height}"
+									  change="{_thingBinding.height = heightNumericStepper.value}; textureUpdate(event)"/>
+					<s:Label text="Cropsize:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="cropSizeNumericStepper"
+									  maximum="1000"
+									  value="{_thingBinding.exactSize}"
+									  change="{_thingBinding.exactSize = cropSizeNumericStepper.value}; textureUpdate(event)"/>
+					<s:Label text="Layers:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="layersNumericStepper" 
+									  minimum="1"
+									  value="{_thingBinding.layers}"
+									  change="{_thingBinding.layers = layersNumericStepper.value}; textureUpdate(event)"/>
+					<s:Label text="Pattern X:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="patternXNumericStepper"
+									  minimum="1"
+									  value="{_thingBinding.patternX}"
+									  change="{_thingBinding.patternX = patternXNumericStepper.value}; textureUpdate(event)"/>
+					<s:Label text="Pattern Y:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="patternYNumericStepper"
+									  minimum="1"
+									  value="{_thingBinding.patternY}"
+									  change="{_thingBinding.patternY = patternYNumericStepper.value}; textureUpdate(event)"/>
+					<s:Label text="Pattern Z:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="patternZNumericStepper"
+									  minimum="1"
+									  value="{_thingBinding.patternZ}"
+									  change="{_thingBinding.patternZ = patternZNumericStepper.value}; textureUpdate(event)"/>			
+					<s:Label text="Animations:"
+							 verticalAlign="middle"
+							 textAlign="right"/>
+					<s:NumericStepper id="framesNumericStepper"
+									  minimum="1"
+									  value="{_thingBinding.frames}"
+									  change="{_thingBinding.frames = framesNumericStepper.value}; textureUpdate(event)"/>
+				</nail:GroupBox>
+				
+				<!-- ground group -->
+				<nail:GroupCheckBox id="groundGroupCheckBox" 
+									label="Ground"
+									width="100%"
+									selected="{_thingBinding.isGround}"
+									change="{_thingBinding.isGround = groundGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{groundGroupCheckBox.selected}">
+						<s:layout>
+							<s:HorizontalLayout paddingLeft="10"
+												paddingRight="10"
+												paddingTop="10"
+												paddingBottom="10"
+												verticalAlign="middle"
+												horizontalAlign="right"/>
+						</s:layout>
+						<s:Label text="Speed:" width="60" textAlign="right"/>
+						<s:NumericStepper id="groundSpeedNumericStepper"
+										  width="80"
+										  maximum="1000"
+										  value="{_thingBinding.groundSpeed}"
+										  change="{_thingBinding.groundSpeed = groundSpeedNumericStepper.value}"/>
+						<s:Spacer width="30"/>
+					</s:Group>
+				</nail:GroupCheckBox>
+				
+				<!-- has ligth group -->
+				<nail:GroupCheckBox id="hasLigthGroupCheckBox"
+									label="Has Light"
+									width="100%"
+									selected="{_thingBinding.hasLight}"
+									change="{_thingBinding.hasLight = hasLigthGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{hasLigthGroupCheckBox.selected}">
+						<s:layout>
+							<s:VerticalLayout paddingLeft="10"
+											  paddingRight="10"
+											  paddingTop="10"
+											  paddingBottom="10"/>
+						</s:layout>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="Color:" width="60" textAlign="right"/>
+							<s:NumericStepper id="lightColorNumericStepper"
+											  width="80" 
+											  maximum="215"
+											  value="{_thingBinding.lightColor}"
+											  change="{_thingBinding.lightColor = lightColorNumericStepper.value}"/>
+							<otlib:EightBitColorPicker id="lightColorSwitchColor"
+													   color="{_thingBinding.lightColor}"
+													   change="{_thingBinding.lightColor = lightColorSwitchColor.color}"/>
+						</s:HGroup>
+						<s:HGroup width="100%" 
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="Intensity:" width="60" textAlign="right"/>
+							<s:NumericStepper id="lightLevelNumericStepper"
+											  width="80"
+											  value="{_thingBinding.lightLevel}"
+											  change="{_thingBinding.lightLevel = lightLevelNumericStepper.value}"/>
+							<s:Spacer width="30"/>
+						</s:HGroup>
+					</s:Group>
+				</nail:GroupCheckBox>
+				
+				<!-- automap group -->
+				<nail:GroupCheckBox id="automapGroupCheckBox" 
+									label="Automap"
+									width="100%"
+									selected="{_thingBinding.miniMap}"
+									change="{_thingBinding.miniMap = automapGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{automapGroupCheckBox.selected}">
+						<s:layout>
+							<s:HorizontalLayout paddingLeft="10"
+												paddingRight="10"
+												paddingTop="10"
+												paddingBottom="10"
+												verticalAlign="middle"
+												horizontalAlign="right"/>
+						</s:layout>
+						<s:Label text="Color:" width="60" textAlign="right"/>
+						<s:NumericStepper id="automapColorNumericStepper"
+										  width="80"
+										  maximum="215"
+										  value="{_thingBinding.miniMapColor}"
+										  change="{_thingBinding.miniMapColor = automapColorNumericStepper.value}"/>
+						<otlib:EightBitColorPicker id="automapColorSwitchColor"
+												   color="{_thingBinding.miniMapColor}"
+												   change="{_thingBinding.miniMapColor = automapColorSwitchColor.color}"/>
+					</s:Group>
+				</nail:GroupCheckBox>
+				
+				<!-- has offset group -->
+				<nail:GroupCheckBox id="hasOffsetGroupCheckBox"
+									label="Has Offset"
+									width="100%"
+									selected="{_thingBinding.hasOffset}"
+									change="{_thingBinding.hasOffset = hasOffsetGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{hasOffsetGroupCheckBox.selected}">
+						<s:layout>
+							<s:VerticalLayout paddingLeft="10"
+											  paddingRight="10"
+											  paddingTop="10"
+											  paddingBottom="10"/>
+						</s:layout>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="X:" width="60" textAlign="right"/>
+							<s:NumericStepper id="offsetXNumericStepper"
+											  width="80"
+											  value="{_thingBinding.offsetX}"
+											  change="{_thingBinding.offsetX = offsetXNumericStepper.value}"/>
+							<s:Spacer width="30"/>
+						</s:HGroup>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="Y:" width="60" textAlign="right"/>
+							<s:NumericStepper id="offsetYNumericStepper"
+											  width="80"
+											  value="{_thingBinding.offsetY}"
+											  change="{_thingBinding.offsetY = offsetYNumericStepper.value}"/>
+							<s:Spacer width="30"/>
+						</s:HGroup>
+					</s:Group>
+				</nail:GroupCheckBox>
+				
+				<!-- has elevation group -->
+				<nail:GroupCheckBox id="hasElevationGroupCheckBox" 
+									label="Has Elevation"
+									width="100%"
+									selected="{_thingBinding.hasElevation}"
+									change="{_thingBinding.hasElevation = hasElevationGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{hasElevationGroupCheckBox.selected}">
+						<s:layout>
+							<s:HorizontalLayout paddingLeft="10"
+												paddingRight="10"
+												paddingTop="10"
+												paddingBottom="10"
+												verticalAlign="middle"
+												horizontalAlign="right"/>
+						</s:layout>
+						<s:Label text="Height:" width="60" textAlign="right"/>
+						<s:NumericStepper id="elevationHeightNumericStepper"
+										  width="80"
+										  value="{_thingBinding.elevation}"
+										  change="{_thingBinding.elevation = elevationHeightNumericStepper.value}"/>
+						<s:Spacer width="30"/>
+					</s:Group>
+				</nail:GroupCheckBox>
+			</s:VGroup>	
+			
+			<s:VGroup gap="10"
+					  width="100%"
+					  height="100%">
+				
+				<!-- equip group -->
+				<nail:GroupCheckBox id="equipGroupCheckBox" 
+									label="Equip"
+									width="100%"
+									selected="{_thingBinding.cloth}"
+									change="{_thingBinding.cloth = equipGroupCheckBox.selected;
+									         if (!equipGroupCheckBox.selected)equipSlotDropDownList.selectedIndex = -1}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{equipGroupCheckBox.selected}">
+						<s:layout>
+							<s:HorizontalLayout paddingLeft="10"
+												paddingRight="10"
+												paddingTop="10"
+												paddingBottom="10"
+												verticalAlign="middle"
+												horizontalAlign="right"/>
+						</s:layout>
+						<s:Label text="Slot:" width="60" textAlign="right"/>
+						<s:DropDownList id="equipSlotDropDownList"
+										width="100%" 
+										height="20"
+										fontSize="10"
+										prompt="None"
+										selectedIndex="{_thingBinding.clothSlot}"
+										change="{_thingBinding.clothSlot = equipSlotDropDownList.selectedIndex}">
+							<s:dataProvider>
+								<s:ArrayList>
+									<fx:String>Two Hand Weapon</fx:String>
+									<fx:String>Helmet</fx:String>
+									<fx:String>Amulet</fx:String>
+									<fx:String>Backpack</fx:String>
+									<fx:String>Armor</fx:String>
+									<fx:String>Shield</fx:String>
+									<fx:String>One Hand Weapon</fx:String>
+									<fx:String>Legs</fx:String>
+									<fx:String>Boots</fx:String>
+									<fx:String>Ring</fx:String>
+									<fx:String>Arrow</fx:String>
+								</s:ArrayList>
+							</s:dataProvider>
+						</s:DropDownList>
+					</s:Group>
+				</nail:GroupCheckBox>
+				
+				<!-- market group -->
+				<nail:GroupCheckBox id="marketGroupCheckBox"
+									label="Market"
+									width="100%"
+									selected="{_thingBinding.isMarketItem}"
+									change="{_thingBinding.isMarketItem = marketGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{marketGroupCheckBox.selected}">
+						<s:layout>
+							<s:VerticalLayout paddingLeft="10"
+											  paddingRight="10"
+											  paddingTop="20"
+											  paddingBottom="10"/>
+						</s:layout>
+						<s:Label text="Name:" width="60"/>
+						<s:TextInput id="marketNameTextInput" width="100%"
+									 text="{_thingBinding.marketName}"
+									 change="{_thingBinding.marketName = marketNameTextInput.text}"/>
+						<s:HGroup width="100%" verticalAlign="middle">
+							<s:Label text="Category:" width="60" textAlign="right"/>
+							<s:DropDownList id="marketCategoryDropDownList"
+											width="170" 
+											height="20"
+											fontSize="10"
+											selectedIndex="{_thingBinding.marketCategory == 0 ? 8 : _thingBinding.marketCategory - 1}"
+											change="{_thingBinding.marketCategory = marketCategoryDropDownList.selectedIndex + 1}">
+								<s:ArrayList>
+									<fx:String>Armors</fx:String>
+									<fx:String>Amulets</fx:String>
+									<fx:String>Boots</fx:String>
+									<fx:String>Containers</fx:String>
+									<fx:String>Decoration</fx:String>
+									<fx:String>Foods</fx:String>
+									<fx:String>Helmets and Hats</fx:String>
+									<fx:String>Legs</fx:String>
+									<fx:String>Others</fx:String>
+									<fx:String>Potions</fx:String>
+									<fx:String>Rings</fx:String>
+									<fx:String>Runes</fx:String>
+									<fx:String>Shields</fx:String>
+									<fx:String>Tools</fx:String>
+									<fx:String>Valuables</fx:String>
+									<fx:String>Ammunition</fx:String>
+									<fx:String>Axes</fx:String>
+									<fx:String>Clubs</fx:String>
+									<fx:String>Distance</fx:String>
+									<fx:String>Swords</fx:String>
+									<fx:String>Wands and Rods</fx:String>
+									<fx:String>Premium Scrolls</fx:String>
+									<fx:String>Meta Weapons</fx:String>
+								</s:ArrayList>
+							</s:DropDownList>
+						</s:HGroup>
+						<s:HGroup width="100%" verticalAlign="middle">
+							<s:Label text="Trade As:" width="60" textAlign="right"/>
+							<s:NumericStepper id="tradeAsNumericStepper"
+											  width="80"
+											  minimum="0"
+											  maximum="0xFFFFFF"
+											  value="{_thingBinding.marketTradeAs}"
+											  change="{_thingBinding.marketTradeAs = tradeAsNumericStepper.value}"/>
+						</s:HGroup>					
+						<s:HGroup width="100%" verticalAlign="middle">
+							<s:Label text="Show As:" width="60" textAlign="right"/>
+							<s:NumericStepper id="showAsNumericStepper"
+											  width="80"
+											  minimum="0"
+											  maximum="0xFFFFFF"
+											  value="{_thingBinding.marketShowAs}"
+											  change="{_thingBinding.marketShowAs = showAsNumericStepper.value}"/>
+						</s:HGroup>					
+						<s:HGroup width="100%" verticalAlign="middle">
+							<s:Label text="Vocation:" width="60" textAlign="right"/>
+							<s:NumericStepper id="vocationNumericStepper"
+											  width="80"
+											  minimum="0"
+											  maximum="0xFFFFFF"
+											  value="{_thingBinding.marketRestrictProfession}"
+											  change="{_thingBinding.marketRestrictProfession = vocationNumericStepper.value}"/>
+						</s:HGroup>					
+						<s:HGroup width="100%" verticalAlign="middle">
+							<s:Label text="Level:" width="60" textAlign="right"/>
+							<s:NumericStepper id="marketRestrictLevelNumericStepper"
+											  width="80"
+											  minimum="0"
+											  maximum="0xFFFFFF"
+											  value="{_thingBinding.marketRestrictLevel}"
+											  change="{_thingBinding.marketRestrictLevel = marketRestrictLevelNumericStepper.value}"/>
+						</s:HGroup>					
+					</s:Group>				
+				</nail:GroupCheckBox>
+				
+				<!-- write / read group -->
+				<nail:GroupBox id="writeReadGroupCheckBox"
+							   label="Write / Read"
+							   width="100%">
+					<s:Group width="100%"
+							 height="100%">
+						<s:layout>
+							<s:VerticalLayout paddingLeft="10"
+											  paddingRight="45"
+											  paddingTop="10"
+											  paddingBottom="10"
+											  horizontalAlign="right"/>
+						</s:layout>
+						<s:CheckBox id="writableCheckBox"
+									label="Writable"
+									minWidth="80"
+									selected="{_thingBinding.writable}"
+									change="{_thingBinding.writable = writableCheckBox.selected}"/>
+						<s:CheckBox id="writableOnceCheckBox"
+									label="Writable Once"
+									minWidth="80"
+									selected="{_thingBinding.writableOnce}"
+									change="{_thingBinding.writableOnce = writableOnceCheckBox.selected}"/>
+						<s:HGroup width="100%" 
+								  verticalAlign="middle"
+								  horizontalAlign="right"
+								  enabled="{writableCheckBox.selected || writableOnceCheckBox.selected}">
+							<s:Label text="Max Length:"
+									 width="80"
+									 textAlign="right"/>
+							<s:NumericStepper id="maxTextLengthNumericStepper" width="80"
+											  value="{_thingBinding.maxTextLength}"
+											  change="{_thingBinding.maxTextLength = maxTextLengthNumericStepper.value}"/>
+						</s:HGroup>
+					</s:Group>
+				</nail:GroupBox>
+				
+				<!-- NEW VERSIONS --> <!-- Make as comment to old versions -->
+				<nail:GroupCheckBox id="actionGroupCheckBox" 
+									label="Action"
+									width="100%"
+									selected="{_thingBinding.hasDefaultAction}"
+									change="{_thingBinding.hasDefaultAction = actionGroupCheckBox.selected}">
+					<s:Group width="100%"
+							 height="100%"
+							 enabled="{actionGroupCheckBox.selected}">
+						<s:layout>
+							<s:HorizontalLayout paddingLeft="10"
+												paddingRight="10"
+												paddingTop="10"
+												paddingBottom="10"
+												verticalAlign="middle"
+												horizontalAlign="right"/>
+						</s:layout>
+						<s:Label text="Type:"
+								 textAlign="right"
+								 width="60"/>
+						<s:DropDownList id="actionDropDownList"
+										width="170" 
+										height="20"
+										fontSize="10"
+										selectedIndex="{_thingBinding.defaultAction}"
+										change="{_thingBinding.defaultAction = actionDropDownList.selectedIndex}">
+							<s:dataProvider>
+								<s:ArrayList>
+									<fx:String>None</fx:String>
+									<fx:String>Look</fx:String>
+									<fx:String>Use</fx:String>
+									<fx:String>Open</fx:String>
+									<fx:String>Auto Walk Higthlight</fx:String>
+								</s:ArrayList>
+							</s:dataProvider>
+						</s:DropDownList>
+					</s:Group>
+				</nail:GroupCheckBox>
+			</s:VGroup>
+			
+			<nail:GroupBox label="Flags"
+						   width="100%">
+				<nail:layout>
+					<s:HorizontalLayout paddingLeft="10"
+										paddingRight="10"
+										paddingBottom="10"
+										paddingTop="10"/>
+				</nail:layout>
+				
+				<s:VGroup width="100%"
+						  height="100%">
+					<s:CheckBox id="clipCheckBox"
+								label="Clip"
+								toolTip="Borders"
+								selected="{_thingBinding.isGroundBorder}"
+								change="{_thingBinding.isGroundBorder = clipCheckBox.selected}"/>
+					<s:CheckBox id="bottomCheckBox"
+								label="Bottom"
+								toolTip="Walls"
+								selected="{_thingBinding.isOnBottom}"
+								change="{_thingBinding.isOnBottom = bottomCheckBox.selected}"/>
+					<s:CheckBox id="topCheckBox"
+								label="Top"
+								toolTip="Archways"
+								selected="{_thingBinding.isOnTop}"
+								change="{_thingBinding.isOnTop = topCheckBox.selected}"/>
+					<s:CheckBox id="containerCheckBox"
+								label="Container"
+								selected="{_thingBinding.isContainer}"
+								change="{_thingBinding.isContainer = containerCheckBox.selected}"/>
+					<s:CheckBox id="stackableCheckBox"
+								label="Stackable"
+								selected="{_thingBinding.stackable}"
+								change="{_thingBinding.stackable = stackableCheckBox.selected}"/>
+					<s:CheckBox id="forceUseCheckBox"
+								label="Force Use"
+								selected="{_thingBinding.forceUse}"
+								change="{_thingBinding.forceUse = forceUseCheckBox.selected}"/>
+					<s:CheckBox id="multiUseCheckBox"
+								label="Multi Use"
+								selected="{_thingBinding.multiUse}"
+								change="{_thingBinding.multiUse = multiUseCheckBox.selected}"/>
+					<s:CheckBox id="liquidContainerCheckBox"
+								label="Fluid Container"
+								selected="{_thingBinding.isFluidContainer}"
+								change="{_thingBinding.isFluidContainer = liquidContainerCheckBox.selected}"/>
+					<s:CheckBox id="liquidPoolCheckBox"
+								label="Fluid Pool"
+								selected="{_thingBinding.isFluid}"
+								change="{_thingBinding.isFluid = liquidPoolCheckBox.selected}"/>
+					<s:CheckBox id="unpassableCheckBox" 
+								label="Unpassable"
+								selected="{_thingBinding.isUnpassable}"
+								change="{_thingBinding.isUnpassable = unpassableCheckBox.selected}"/>
+					<s:CheckBox id="unmoveableCheckBox" 
+								label="Unmoveable"
+								selected="{_thingBinding.isUnmoveable}"
+								change="{_thingBinding.isUnmoveable = unmoveableCheckBox.selected}"/>
+					<s:CheckBox id="blockMissileCheckBox"
+								label="Block Missile"
+								selected="{_thingBinding.blockMissile}"
+								change="{_thingBinding.blockMissile = blockMissileCheckBox.selected}"/>
+					<s:CheckBox id="blockPathfindCheckBox"
+								label="Block Pathfind"
+								selected="{_thingBinding.blockPathfind}"
+								change="{_thingBinding.blockPathfind = blockPathfindCheckBox.selected}"/>
+				</s:VGroup>
+				
+				<s:VGroup width="100%"
+						  height="100%">
+					
+					<!-- NEW VERSIONS --> <!-- Make as comment to old versions -->
+					<s:CheckBox id="noMoveAnimationCheckBox"
+								label="No Move Animation"
+								selected="{_thingBinding.noMoveAnimation}"
+								change="{_thingBinding.noMoveAnimation = noMoveAnimationCheckBox.selected}"/>
+					
+					<s:CheckBox id="pickupableCheckBox"
+								label="Pickupable"
+								selected="{_thingBinding.pickupable}"
+								change="{_thingBinding.pickupable = pickupableCheckBox.selected}"/>
+					<s:CheckBox id="hangableCheckBox"
+								label="Hangable"	
+								selected="{_thingBinding.hangable}"
+								change="{_thingBinding.hangable = hangableCheckBox.selected}"/>
+					<s:CheckBox id="horizontalCheckBox"
+								label="Horizontal"
+								selected="{_thingBinding.isHorizontal}"
+								change="{_thingBinding.isHorizontal = horizontalCheckBox.selected}"/>
+					<s:CheckBox id="verticalCheckBox"
+								label="Vertical"
+								selected="{_thingBinding.isVertical}"
+								change="{_thingBinding.isVertical = verticalCheckBox.selected}"/>
+					<s:CheckBox id="rotatableCheckBox"
+								label="Rotatable"
+								selected="{_thingBinding.rotatable}"
+								change="{_thingBinding.rotatable = rotatableCheckBox.selected}"/>
+					<s:CheckBox id="dontHideCheckBox"
+								label="Don't Hide"
+								selected="{_thingBinding.dontHide}"
+								change="{_thingBinding.dontHide = dontHideCheckBox.selected}"/>
+					<s:CheckBox id="translucentCheckBox"
+								label="Translucent"
+								selected="{_thingBinding.isTranslucent}"
+								change="{_thingBinding.isTranslucent = translucentCheckBox.selected}"/>
+					<s:CheckBox id="layingCorpseCheckBox"
+								label="Laying Corpse"
+								selected="{_thingBinding.isLayingCorpse}"
+								change="{_thingBinding.isLayingCorpse = layingCorpseCheckBox.selected}"/>
+					<s:CheckBox id="animateAlwaysCheckBox"
+								label="Animate Always"
+								selected="{_thingBinding.animateAlways}"
+								change="{_thingBinding.animateAlways = animateAlwaysCheckBox.selected}"/>
+					<s:CheckBox id="fullGroundCheckBox"
+								label="Full Ground"
+								selected="{_thingBinding.isFullGround}"
+								change="{_thingBinding.isFullGround = fullGroundCheckBox.selected}"/>
+					<s:CheckBox id="ignoreLookCheckBox"
+								label="Ignore Look"
+								selected="{_thingBinding.ignoreLook}"
+								change="{_thingBinding.ignoreLook = ignoreLookCheckBox.selected}"/>
+					
+					<!-- NEW VERSIONS --> <!-- Make as comment to old versions -->
+					<s:CheckBox id="usableCheckBox"
+								label="Usable"
+								selected="{_thingBinding.usable}"
+								change="{_thingBinding.usable = usableCheckBox.selected}"/>
+				</s:VGroup>
+			</nail:GroupBox>
+		</s:Group>
+	</s:Scroller>
+</s:Group>

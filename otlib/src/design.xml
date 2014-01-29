@@ -1,0 +1,5 @@
+<design>
+	<namespaces>
+		<namespace prefix="otlib" uri="library://ns.nail.com/otlib" />
+	</namespaces>
+</design>
