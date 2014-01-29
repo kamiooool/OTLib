@@ -1056,10 +1056,10 @@
 								label="Translucent"
 								selected="{_thingBinding.isTranslucent}"
 								change="{_thingBinding.isTranslucent = translucentCheckBox.selected}"/>
-					<s:CheckBox id="layingCorpseCheckBox"
-								label="Laying Corpse"
-								selected="{_thingBinding.isLayingCorpse}"
-								change="{_thingBinding.isLayingCorpse = layingCorpseCheckBox.selected}"/>
+					<s:CheckBox id="isLyingObjectCheckBox"
+								label="Lying Object"
+								selected="{_thingBinding.isLyingObject}"
+								change="{_thingBinding.isLyingObject = isLyingObjectCheckBox.selected}"/>
 					<s:CheckBox id="animateAlwaysCheckBox"
 								label="Animate Always"
 								selected="{_thingBinding.animateAlways}"

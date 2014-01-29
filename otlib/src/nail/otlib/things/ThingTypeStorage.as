@@ -820,8 +820,8 @@ package nail.otlib.things
 						thing.elevation    = stream.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.LAYING_CORPSE:
-						thing.isLayingCorpse = true;
+					case ThingTypeFlags.LYING_OBJECT:
+						thing.isLyingObject = true;
 						break;
 					
 					case ThingTypeFlags.ANIMATE_ALWAYS:
@@ -1008,8 +1008,8 @@ package nail.otlib.things
 						thing.elevation    = stream.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags2.LAYING_CORPSE:
-						thing.isLayingCorpse = true;
+					case ThingTypeFlags2.LYING_OBJECT:
+						thing.isLyingObject = true;
 						break;
 					
 					case ThingTypeFlags2.ANIMATE_ALWAYS:
@@ -1266,7 +1266,7 @@ package nail.otlib.things
 				stream.writeShort(thing.elevation);
 			}
 			
-			if (thing.isLayingCorpse) { stream.writeByte(ThingTypeFlags.LAYING_CORPSE); }
+			if (thing.isLyingObject) { stream.writeByte(ThingTypeFlags.LYING_OBJECT); }
 			if (thing.animateAlways) { stream.writeByte(ThingTypeFlags.ANIMATE_ALWAYS); }
 			
 			if (thing.miniMap)
@@ -1374,7 +1374,7 @@ package nail.otlib.things
 				stream.writeShort(thing.elevation);
 			}
 			
-			if (thing.isLayingCorpse) { stream.writeByte(ThingTypeFlags2.LAYING_CORPSE); }
+			if (thing.isLyingObject) { stream.writeByte(ThingTypeFlags2.LYING_OBJECT); }
 			
 			if (thing.animateAlways) { stream.writeByte(ThingTypeFlags2.ANIMATE_ALWAYS); }
 			

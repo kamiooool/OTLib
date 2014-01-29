@@ -97,7 +97,7 @@ package nail.otlib.things
 		
 		static public const HAS_ELEVATION : uint = 0x19;
 		
-		static public const LAYING_CORPSE : uint = 0x1A;
+		static public const LYING_OBJECT : uint = 0x1A;
 		
 		static public const ANIMATE_ALWAYS : uint = 0x1B;
 		

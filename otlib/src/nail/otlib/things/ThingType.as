@@ -123,7 +123,7 @@ package nail.otlib.things
 		
 		public var elevation : uint;
 		
-		public var isLayingCorpse : Boolean;
+		public var isLyingObject : Boolean;
 		
 		public var animateAlways : Boolean;
 		

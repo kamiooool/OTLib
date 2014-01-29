@@ -176,7 +176,7 @@ package nail.otlib.things
 		public var elevation : uint;
 		
 		[Bindable]
-		public var isLayingCorpse : Boolean;
+		public var isLyingObject : Boolean;
 		
 		[Bindable]
 		public var animateAlways : Boolean;
