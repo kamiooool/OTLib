@@ -566,6 +566,7 @@
 							 textAlign="right"/>
 					<s:NumericStepper id="framesNumericStepper"
 									  minimum="1"
+									  maximum="16"
 									  value="{_thingBinding.frames}"
 									  change="{_thingBinding.frames = framesNumericStepper.value}; textureUpdate(event)"/>
 				</nail:GroupBox>
