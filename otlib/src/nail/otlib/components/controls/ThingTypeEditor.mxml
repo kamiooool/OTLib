@@ -526,7 +526,7 @@
 									  minimum="1"
 									  value="{_thingBinding.height}"
 									  change="{_thingBinding.height = heightNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Cropsize:"
+					<s:Label text="Crop Size:"
 							 verticalAlign="middle"
 							 textAlign="right"/>
 					<s:NumericStepper id="cropSizeNumericStepper"
