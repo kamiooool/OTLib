@@ -191,7 +191,6 @@ package nail.otlib.assets
 		
 		static public function getVersionByValue(value:uint) : AssetsVersion
 		{
-			var version : AssetsVersion;
 			var key : String;
 			
 			key = "$" + value;
