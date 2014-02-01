@@ -186,6 +186,7 @@ package nail.otlib.assets
 			{
 				list.push(version);
 			}
+			list.sortOn("value", Array.NUMERIC | Array.DESCENDING);
 			return list;
 		}
 		
