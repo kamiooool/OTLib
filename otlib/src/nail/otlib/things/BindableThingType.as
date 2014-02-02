@@ -276,7 +276,7 @@ package nail.otlib.things
 		{
 			if (sprites != null && index < sprites.length && sprites[index] != null)
 			{
-				return sprites[index].bitmap;
+				return sprites[index].getBitmap();
 			}
 			return null;
 		}

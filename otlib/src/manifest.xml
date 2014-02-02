@@ -47,5 +47,7 @@
 	<component id="EightBitColorPicker" class="nail.otlib.components.controls.EightBitColorPicker"/>
 	<!-- EightBitColorPickerSkin -->
 	<component id="EightBitColorPickerSkin" class="nail.otlib.components.skins.EightBitColorPickerSkin"/>
+	<!-- ThingView -->
+	<component id="ThingView" class="nail.otlib.components.controls.ThingView"/>
 	
 </componentPackage>

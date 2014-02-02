@@ -31,7 +31,6 @@ package nail.otlib.things
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
-	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
 	
@@ -286,6 +285,9 @@ package nail.otlib.things
 					return false;
 			}
 			
+			thing.category = category;
+			thing.id = id;
+			
 			dispatchEvent(new Event(Event.CHANGE));
 			return true;
 		}
@@ -340,135 +342,6 @@ package nail.otlib.things
 			thing.category = category;
 			thing.id = id;
 			dispatchEvent(new Event(Event.CHANGE));
-			return true;
-		}
-		
-		public function exportThing(thing:ThingType, version:AssetsVersion, file:File) : Boolean
-		{
-			var stream : FileStream;
-			
-			if (file == null)
-			{
-				throw new ArgumentError("Parameter file cannot be null.");
-			}
-			
-			if (thing == null)
-			{
-				throw new ArgumentError("Parameter thing cannot be null.");
-			}
-			
-			if (version == null)
-			{
-				throw new ArgumentError("Parameter version cannot be null.");
-			}
-			
-			stream = new FileStream();
-			stream.endian = Endian.LITTLE_ENDIAN;
-			
-			try
-			{
-				stream.open(file, FileMode.WRITE);
-			} 
-			catch(error:Error)
-			{
-				trace(error.getStackTrace());
-				return false;
-			}
-			
-			stream.writeShort(version.value); // Write version
-			stream.writeUTF(thing.category);  // Write category
-			
-			trace("serializing thing. Version = ", version);
-			
-			if (version.value >= 1030)
-			{
-				if (!writeProperties2(stream, thing))
-				{
-					trace("erro ao serializar propriedades 2");
-					return false;
-				}
-			}
-			else
-			{
-				if (!writeProperties(stream, thing))
-				{
-					trace("erro ao serializar propriedades");
-					return false;
-				}
-			}	
-			
-			if (!serialize_WriteSprites(stream, thing))
-			{
-				trace("erro ao serializar sprites");
-				return false;
-			}	
-			
-			stream.close();
-			return true;
-		}
-		
-		public function importThing(file:File) : Boolean
-		{
-			var stream : FileStream;
-			var thing : ThingType;
-			var version : AssetsVersion;
-			
-			if (file == null) 
-			{
-				throw new ArgumentError("Parameter file cannot be null.");
-			}
-			
-			stream = new FileStream();
-			stream.endian = Endian.LITTLE_ENDIAN;
-			
-			try
-			{
-				stream.open(file, FileMode.READ);
-			} 
-			catch(error:Error) 
-			{
-				return false;
-			}
-			
-			version = AssetsVersion.getVersionByValue(stream.readUnsignedShort());
-			if (version == null)
-			{
-				return false;
-			}
-			
-			thing = new ThingType();
-			thing.category = ThingCategory.getCategory(stream.readUTF());
-			if (thing.category == null)
-			{
-				return false;
-			}
-			
-			if (version.value >= 1030)
-			{
-				if (!readThingType2(thing, stream))
-				{
-					return false;
-				}
-			}
-			else 
-			{
-				if (!readThingType(thing, stream))
-				{
-					return false;
-				}
-			}
-			
-			if (!unserialize_ReadThingSprites(thing, stream))
-			{
-				return false;
-			}
-			
-			stream.close();
-			
-			if (!addThing(thing, thing.category))
-			{
-				return false;
-			}
 			return true;
 		}
 		
@@ -1107,57 +980,6 @@ package nail.otlib.things
 			return true;
 		}
 		
-		private function unserialize_ReadThingSprites(thing:ThingType, stream:FileStream) : Boolean
-		{
-			var totalSprites : uint;
-			var i : int;
-			var length : uint;
-			var pixels : ByteArray;
-			
-			thing.width  = stream.readUnsignedByte();
-			thing.height = stream.readUnsignedByte();
-			
-			if (thing.width > 1 || thing.height > 1)
-			{
-				thing.exactSize = stream.readUnsignedByte();
-			}
-			else 
-			{
-				thing.exactSize = Sprite.SPRITE_PIXELS;
-			}
-			
-			thing.layers   = stream.readUnsignedByte();
-			thing.patternX = stream.readUnsignedByte();
-			thing.patternY = stream.readUnsignedByte();
-			thing.patternZ = stream.readUnsignedByte();
-			thing.frames   = stream.readUnsignedByte();
-			
-			totalSprites = thing.width * thing.height * thing.layers * thing.patternX * thing.patternY * thing.patternZ * thing.frames;			
-			if (totalSprites > 4096)
-			{
-				throw new Error("A thing type has more than 4096 sprites.");
-			}
-			
-			thing.spriteIndex = new Vector.<uint>(totalSprites);
-			for (i = 0; i < totalSprites; i++)
-			{
-				pixels = new ByteArray();
-				pixels.endian = Endian.BIG_ENDIAN;
-				length = stream.readUnsignedInt();
-				if (length > stream.bytesAvailable)
-				{
-					return false;
-				}
-				stream.readBytes(pixels, 0, length);
-				if (!_sprites.addSprite(pixels))
-				{
-					return false;
-				}
-				thing.spriteIndex[i] = _sprites.spritesCount;
-			}
-			return true;
-		}
-		
 		private function writeThingList(stream:FileStream, list:Dictionary, minId:uint, maxId:uint, version:AssetsVersion, isItems:Boolean = false) : void
 		{
 			var i : int;
@@ -1448,43 +1270,6 @@ package nail.otlib.things
 			for (i = 0; i < length; i++)
 			{
 				stream.writeUnsignedInt(spriteIndex[i]); // Write sprite index
-			}
-			return true;
-		}
-		
-		private function serialize_WriteSprites(stream:FileStream, thing:ThingType) : Boolean
-		{ 
-			var length : uint; 
-			var i : int;
-			var spriteList : Vector.<uint>; 
-			var pixels : ByteArray;
-			
-			stream.writeByte(thing.width);  // Write width
-			stream.writeByte(thing.height); // Write height
-			
-			if (thing.width > 1 || thing.height > 1)
-			{
-				stream.writeByte(thing.exactSize); // Write exact size
-			}
-			
-			stream.writeByte(thing.layers);   // Write layers
-			stream.writeByte(thing.patternX); // Write pattern X
-			stream.writeByte(thing.patternY); // Write pattern Y
-			stream.writeByte(thing.patternZ); // Write pattern Z
-			stream.writeByte(thing.frames);   // Write frames
-			
-			spriteList = thing.spriteIndex;
-			length = spriteList.length;
-			for (i = 0; i < length; i++)
-			{
-				pixels = _sprites.getPixels(spriteList[i]);
-				if (pixels == null)
-				{
-					return false;
-				}
-				pixels.position = 0;
-				stream.writeUnsignedInt(pixels.length);
-				stream.writeBytes(pixels, 0, pixels.length);
 			}
 			return true;
 		}

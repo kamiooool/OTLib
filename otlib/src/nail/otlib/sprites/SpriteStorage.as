@@ -263,6 +263,34 @@ package nail.otlib.sprites
 			return false;
 		}
 		
+		/**
+		 * Checks if a sprite id and a sprite pixels are equal.
+		 * 
+		 * @param id The id of the sprite to compare.
+		 * @param pixels Sprite pixels to compare.
+		 */
+		public function compare(id:uint, pixels:ByteArray) : Boolean
+		{
+			var bmp1 : BitmapData;
+			var bmp2 : BitmapData;
+			var otherPixels : ByteArray;
+			
+			if (hasSpriteId(id) && pixels != null)
+			{
+				pixels.position = 0;
+				bmp1 = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0xFFFF00FF);
+				bmp1.setPixels(bmp1.rect, pixels);
+				
+				otherPixels = this.getPixels(id);
+				otherPixels.position = 0
+				bmp2 = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0xFFFF00FF);
+				bmp2.setPixels(bmp2.rect, otherPixels);
+				
+				return (bmp1.compare(bmp2) == 0);
+			}
+			return false;
+		}
+		
 		//--------------------------------------
 		// Private
 		//--------------------------------------

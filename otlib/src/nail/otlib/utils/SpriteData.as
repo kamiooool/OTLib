@@ -24,6 +24,8 @@ package nail.otlib.utils
 {
 	import flash.display.BitmapData;
 	import flash.utils.ByteArray;
+	
+	import nail.otlib.sprites.Sprite;
 
 	public class SpriteData
 	{
@@ -37,8 +39,6 @@ package nail.otlib.utils
 		
 		public var pixels : ByteArray;
 		
-		public var bitmap : BitmapData;
-		
 		//--------------------------------------------------------------------------
 		//
 		// CONSTRUCTOR
@@ -48,6 +48,37 @@ package nail.otlib.utils
 		public function SpriteData()
 		{
 			
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		// METHODS
+		//
+		//--------------------------------------------------------------------------
+		
+		//--------------------------------------
+		// Public
+		//--------------------------------------
+		
+		public function getBitmap() : BitmapData
+		{
+			var bitmap : BitmapData;
+			
+			if (pixels != null)
+			{
+				try
+				{
+					pixels.position = 0;
+					bitmap = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0x00FF00FF);
+					bitmap.setPixels(bitmap.rect, pixels);
+				} 
+				catch(error:Error)
+				{
+					return null;
+				}
+				return bitmap;
+			}
+			return null;
 		}
 	}
 }
