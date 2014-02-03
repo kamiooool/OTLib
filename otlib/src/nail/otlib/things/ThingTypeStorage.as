@@ -514,14 +514,16 @@ package nail.otlib.things
 			}
 		}
 		
-		private function loadThingTypeList(stream:FileStream, version:AssetsVersion, list:*, minID:uint, maxID:uint, category:String) : Boolean
+		private function loadThingTypeList(stream:FileStream, version:AssetsVersion, list:Dictionary, minID:uint, maxID:uint, category:String) : Boolean
 		{
 			var thing : ThingType;
 			var id : int;
 			var newVersion : Boolean;
 			var dispatchProgress : Boolean;
+			var isU32 : Boolean;
 			
 			newVersion = (version.value >= 1010);
+			isU32 = (version.value >= 960);
 			dispatchProgress = this.hasEventListener(ProgressEvent.PROGRESS);
 			
 			for (id = minID; id <= maxID; id++)
@@ -545,7 +547,7 @@ package nail.otlib.things
 					}
 				}
 				
-				if (!readThingSprites(thing, stream))
+				if (!readThingSprites(thing, isU32, stream))
 				{
 					return false;
 				}
@@ -942,10 +944,10 @@ package nail.otlib.things
 			return true;
 		}
 		
-		private function readThingSprites(thing:ThingType, stream:FileStream) : Boolean
+		private function readThingSprites(thing:ThingType, isU32:Boolean, stream:FileStream) : Boolean
 		{
 			var totalSprites : uint; 
-			var i : int; 
+			var i : int;
 			
 			thing.width  = stream.readUnsignedByte();
 			thing.height = stream.readUnsignedByte();
@@ -972,9 +974,17 @@ package nail.otlib.things
 			}
 			
 			thing.spriteIndex = new Vector.<uint>(totalSprites);
+			
 			for (i = 0; i < totalSprites; i++)
 			{
-				thing.spriteIndex[i] = stream.readUnsignedInt();
+				if (isU32)
+				{
+					thing.spriteIndex[i] = stream.readUnsignedInt();
+				}
+				else 
+				{
+					thing.spriteIndex[i] = stream.readUnsignedShort();
+				}
 			}	
 			
 			return true;
@@ -986,9 +996,12 @@ package nail.otlib.things
 			var thing : ThingType;
 			var newVersion : Boolean;
 			var dispatchProgress : Boolean;
+			var isU32 : Boolean;
 			
 			newVersion = (version.value >= 1010);
+			isU32 = (version.value >= 960);
 			dispatchProgress = this.hasEventListener(ProgressEvent.PROGRESS);
+			
 			for (i = minId; i <= maxId; i++)
 			{
 				thing = list[i];
@@ -1003,7 +1016,7 @@ package nail.otlib.things
 						writeProperties(stream, thing);
 					}
 						
-					writeSprites(stream, thing);
+					writeSprites(stream, thing, isU32);
 				}
 				else
 				{
@@ -1245,7 +1258,7 @@ package nail.otlib.things
 			return true;
 		}
 		
-		private function writeSprites(stream:FileStream, thing:ThingType) : Boolean
+		private function writeSprites(stream:FileStream, thing:ThingType, isU32:Boolean) : Boolean
 		{ 
 			var length : uint;
 			var i : int;
@@ -1267,9 +1280,18 @@ package nail.otlib.things
 			
 			spriteIndex = thing.spriteIndex;
 			length = spriteIndex.length;
+			
 			for (i = 0; i < length; i++)
 			{
-				stream.writeUnsignedInt(spriteIndex[i]); // Write sprite index
+				// Write sprite index
+				if (isU32)
+				{
+					stream.writeUnsignedInt(spriteIndex[i]); 
+				}
+				else
+				{
+					stream.writeShort(spriteIndex[i]);
+				}
 			}
 			return true;
 		}

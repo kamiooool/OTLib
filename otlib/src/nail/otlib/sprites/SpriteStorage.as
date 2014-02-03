@@ -81,6 +81,8 @@ package nail.otlib.sprites
 		
 		private var _blankSprite : Sprite;
 		
+		private var _headSize : uint;
+		
 		//--------------------------------------------------------------------------
 		//
 		// CONSTRUCTOR
@@ -154,7 +156,18 @@ package nail.otlib.sprites
 				_rawBytes = bytes;
 				_rawBytes.endian = Endian.LITTLE_ENDIAN;
 				_signature = bytes.readUnsignedInt();
-				_spritesCount = bytes.readUnsignedInt();
+				
+				if (version.value >= 960)
+				{
+					_spritesCount = bytes.readUnsignedInt();
+					_headSize = HEAD_SIZE_U32;
+				}
+				else 
+				{
+					_spritesCount = bytes.readUnsignedShort();
+					_headSize = HEAD_SIZE_U16;
+				}
+				
 				_blankSprite = new Sprite(0);	
 				_sprites = new Dictionary();
 				_sprites[0] = _blankSprite;
@@ -301,7 +314,7 @@ package nail.otlib.sprites
 			var spriteAddress : uint;
 			var pixelDataSize : uint;
 			
-			bytes.position = ((index - 1) * 4) + HEAD_SIZE;
+			bytes.position = ((index - 1) * 4) + _headSize;
 			spriteAddress  = bytes.readUnsignedInt();
 			if (spriteAddress == 0)
 			{
@@ -358,10 +371,18 @@ package nail.otlib.sprites
 			_rawBytes.position = 0;
 			stream.endian = Endian.LITTLE_ENDIAN;
 			stream.writeUnsignedInt(version.sprSignature);
-			stream.writeUnsignedInt(_spritesCount);
+			
+			if (version.value >= 960)
+			{
+				stream.writeUnsignedInt(_spritesCount);
+			}
+			else 
+			{
+				stream.writeShort(_spritesCount);
+			}
 			
 			addressPosition = stream.position;
-			offset = (_spritesCount * 4) + HEAD_SIZE;
+			offset = (_spritesCount * 4) + _headSize;
 			dispatchProgess = this.hasEventListener(ProgressEvent.PROGRESS);
 			
 			currentSprite = 1;
@@ -461,6 +482,8 @@ package nail.otlib.sprites
 		//
 		//--------------------------------------------------------------------------
 		
-		static private const HEAD_SIZE : uint = 8;
+		static private const HEAD_SIZE_U16 : uint = 6;
+		
+		static private const HEAD_SIZE_U32 : uint = 8;
 	}
 }
