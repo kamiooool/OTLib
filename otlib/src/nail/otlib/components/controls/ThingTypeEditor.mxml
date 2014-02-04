@@ -505,70 +505,79 @@
 							   label="Texture"
 							   width="100%">
 					
-					<nail:layout>
-						<s:TileLayout requestedColumnCount="2"
-									  paddingLeft="80"
-									  paddingRight="10"
-									  paddingTop="10"
-									  paddingBottom="10"/>
-					</nail:layout>
-					<s:Label text="Width:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="widthNumericStepper"
-									  minimum="1"
-									  value="{_thingBinding.width}"
-									  change="{_thingBinding.width = widthNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Height:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="heightNumericStepper"
-									  minimum="1"
-									  value="{_thingBinding.height}"
-									  change="{_thingBinding.height = heightNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Crop Size:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="cropSizeNumericStepper"
-									  maximum="1000"
-									  value="{_thingBinding.exactSize}"
-									  change="{_thingBinding.exactSize = cropSizeNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Layers:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="layersNumericStepper" 
-									  minimum="1"
-									  value="{_thingBinding.layers}"
-									  change="{_thingBinding.layers = layersNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Pattern X:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="patternXNumericStepper"
-									  minimum="1"
-									  value="{_thingBinding.patternX}"
-									  change="{_thingBinding.patternX = patternXNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Pattern Y:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="patternYNumericStepper"
-									  minimum="1"
-									  value="{_thingBinding.patternY}"
-									  change="{_thingBinding.patternY = patternYNumericStepper.value}; textureUpdate(event)"/>
-					<s:Label text="Pattern Z:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="patternZNumericStepper"
-									  minimum="1"
-									  value="{_thingBinding.patternZ}"
-									  change="{_thingBinding.patternZ = patternZNumericStepper.value}; textureUpdate(event)"/>			
-					<s:Label text="Animations:"
-							 verticalAlign="middle"
-							 textAlign="right"/>
-					<s:NumericStepper id="framesNumericStepper"
-									  minimum="1"
-									  maximum="16"
-									  value="{_thingBinding.frames}"
-									  change="{_thingBinding.frames = framesNumericStepper.value}; textureUpdate(event)"/>
+					<s:TileGroup right="35"
+								 requestedColumnCount="2"
+								 paddingLeft="10"
+								 paddingRight="10"
+								 paddingTop="10"
+								 paddingBottom="10">
+						
+						<s:Label text="Width:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="widthNumericStepper"
+										  width="70"
+										  minimum="1"
+										  value="{_thingBinding.width}"
+										  change="{_thingBinding.width = widthNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Height:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="heightNumericStepper"
+										  width="70"
+										  minimum="1"
+										  value="{_thingBinding.height}"
+										  change="{_thingBinding.height = heightNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Crop Size:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="cropSizeNumericStepper"
+										  width="70"
+										  maximum="1000"
+										  value="{_thingBinding.exactSize}"
+										  change="{_thingBinding.exactSize = cropSizeNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Layers:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="layersNumericStepper"
+										  width="70"
+										  minimum="1"
+										  value="{_thingBinding.layers}"
+										  change="{_thingBinding.layers = layersNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Pattern X:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="patternXNumericStepper"
+										  width="70"
+										  minimum="1"
+										  value="{_thingBinding.patternX}"
+										  change="{_thingBinding.patternX = patternXNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Pattern Y:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="patternYNumericStepper"
+										  width="70"
+										  minimum="1"
+										  value="{_thingBinding.patternY}"
+										  change="{_thingBinding.patternY = patternYNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Pattern Z:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="patternZNumericStepper"
+										  width="70"
+										  minimum="1"
+										  value="{_thingBinding.patternZ}"
+										  change="{_thingBinding.patternZ = patternZNumericStepper.value}; textureUpdate(event)"/>
+						<s:Label text="Animations:"
+								 verticalAlign="middle"
+								 textAlign="right"/>
+						<s:NumericStepper id="framesNumericStepper"
+										  width="70"
+										  minimum="1"
+										  maximum="16"
+										  value="{_thingBinding.frames}"
+										  change="{_thingBinding.frames = framesNumericStepper.value}; textureUpdate(event)"/>
+					</s:TileGroup>
 				</nail:GroupBox>
 				
 				<!-- ground group -->
@@ -749,7 +758,7 @@
 							 enabled="{equipGroupCheckBox.selected}">
 						<s:layout>
 							<s:HorizontalLayout paddingLeft="10"
-												paddingRight="10"
+												paddingRight="45"
 												paddingTop="10"
 												paddingBottom="10"
 												verticalAlign="middle"
@@ -793,7 +802,7 @@
 							 enabled="{marketGroupCheckBox.selected}">
 						<s:layout>
 							<s:VerticalLayout paddingLeft="10"
-											  paddingRight="10"
+											  paddingRight="45"
 											  paddingTop="20"
 											  paddingBottom="10"/>
 						</s:layout>
@@ -912,7 +921,6 @@
 					</s:Group>
 				</nail:GroupBox>
 				
-				<!-- NEW VERSIONS --> <!-- Make as comment to old versions -->
 				<nail:GroupCheckBox id="actionGroupCheckBox" 
 									label="Action"
 									width="100%"
@@ -923,7 +931,7 @@
 							 enabled="{actionGroupCheckBox.selected}">
 						<s:layout>
 							<s:HorizontalLayout paddingLeft="10"
-												paddingRight="10"
+												paddingRight="45"
 												paddingTop="10"
 												paddingBottom="10"
 												verticalAlign="middle"
@@ -952,7 +960,8 @@
 				</nail:GroupCheckBox>
 			</s:VGroup>
 			
-			<nail:GroupBox label="Flags"
+			<nail:GroupBox id="flagsGroupBox"
+						   label="Flags"
 						   width="100%">
 				<nail:layout>
 					<s:HorizontalLayout paddingLeft="10"
@@ -961,7 +970,8 @@
 										paddingTop="10"/>
 				</nail:layout>
 				
-				<s:VGroup width="100%"
+				<s:VGroup id="flagsLeftColumn" 
+						  width="100%"
 						  height="100%">
 					<s:CheckBox id="clipCheckBox"
 								label="Clip"
@@ -1020,15 +1030,14 @@
 								change="{_thingBinding.blockPathfind = blockPathfindCheckBox.selected}"/>
 				</s:VGroup>
 				
-				<s:VGroup width="100%"
+				<s:VGroup id="flagsRightColumn" 
+						  width="100%"
 						  height="100%">
 					
-					<!-- NEW VERSIONS --> <!-- Make as comment to old versions -->
 					<s:CheckBox id="noMoveAnimationCheckBox"
 								label="No Move Animation"
 								selected="{_thingBinding.noMoveAnimation}"
 								change="{_thingBinding.noMoveAnimation = noMoveAnimationCheckBox.selected}"/>
-					
 					<s:CheckBox id="pickupableCheckBox"
 								label="Pickupable"
 								selected="{_thingBinding.pickupable}"
@@ -1073,8 +1082,6 @@
 								label="Ignore Look"
 								selected="{_thingBinding.ignoreLook}"
 								change="{_thingBinding.ignoreLook = ignoreLookCheckBox.selected}"/>
-					
-					<!-- NEW VERSIONS --> <!-- Make as comment to old versions -->
 					<s:CheckBox id="usableCheckBox"
 								label="Usable"
 								selected="{_thingBinding.usable}"
