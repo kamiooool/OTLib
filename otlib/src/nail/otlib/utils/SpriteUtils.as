@@ -1,5 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // 
+//  Copyright (c) 2014 <nailsonnego@gmail.com>
+// 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
@@ -20,28 +22,54 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////
 
-package
+package nail.otlib.utils
 {
-	internal final class OTLibClasses
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
+	
+	import nail.errors.AbstractClassError;
+	import nail.utils.BitmapUtils;
+
+	public final class SpriteUtils
 	{
-		// OTLib classes 
-		import nail.components.containers.GroupBox; GroupBox;
-		import nail.components.skins.BorderContainerSkin; BorderContainerSkin;
-		import nail.components.skins.ButtonSkin; ButtonSkin;
-		import nail.components.skins.GroupBoxSkin; GroupBoxSkin;
+		//--------------------------------------------------------------------------
+		//
+		// CONSTRUCTOR
+		//
+		//--------------------------------------------------------------------------
 		
-		import nail.core.INailMain; INailMain;
-		import nail.core.INailApplication; INailApplication;
+		public function SpriteUtils()
+		{
+			throw new AbstractClassError(SpriteUtils);
+		}
 		
-		import nail.otlib.components.controls.ThingTypeEditor; ThingTypeEditor;
+		//--------------------------------------------------------------------------
+		//
+		// STATIC
+		//
+		//--------------------------------------------------------------------------
 		
-		import nail.otlib.components.controls.CheckerBoard; CheckerBoard;
-		import nail.otlib.components.controls.EightBitColorPanel; EightBitColorPanel;
-		import nail.otlib.components.controls.EightBitColorPicker; EightBitColorPicker;
-		import nail.otlib.components.controls.HSIColorPanel; HSIColorPanel;
-		import nail.otlib.components.controls.HSIColorPicker; HSIColorPicker;
-		import nail.otlib.components.skins.EightBitColorPickerSkin; EightBitColorPickerSkin;
-		import nail.otlib.components.skins.HSIColorPickerSkin; HSIColorPickerSkin;
-		import nail.otlib.components.controls.ThingView; ThingView;
+		static public function removeMagenta(sprite:BitmapData) : BitmapData
+		{
+			// Transform bitmap 24 to 32 bits
+			if (!sprite.transparent)
+			{
+				sprite = BitmapUtils.to32bits(sprite);
+			}
+			
+			// Replace magenta to transparent.
+			BitmapUtils.replaceColor(sprite, 0xFFFF00FF, 0x00FF00FF);
+			return sprite;
+		}
+		
+		static public function isEmpty(sprite:BitmapData) : Boolean
+		{
+			var bounds : Rectangle = sprite.getColorBoundsRect(0xFF000000, 0x00000000, false);
+			if (bounds.width == 0 && bounds.height == 0)
+			{
+				return true;
+			}
+			return false;
+		}
 	}
 }

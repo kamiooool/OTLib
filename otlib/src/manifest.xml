@@ -33,6 +33,8 @@
 
 <componentPackage>
 	
+	<!-- CheckerBoard -->
+	<component id="CheckerBoard" class="nail.otlib.components.controls.CheckerBoard"/>
 	<!-- ThingTypeEditor -->
 	<component id="ThingTypeEditor" class="nail.otlib.components.controls.ThingTypeEditor"/>
 	<!-- HSIColorPanel -->
