@@ -259,6 +259,30 @@ package nail.otlib.sprites
 			return true;
 		}
 		
+		public function removeSprite(index:uint) : Boolean
+		{
+			if (index == 0 || index > _spritesCount)
+			{
+				throw new ArgumentError("Parameter index is out of range.");
+			}
+			
+			// Add a blank sprite at index.
+			_sprites[index] = new Sprite(index);
+			
+			if (index == _spritesCount)
+			{
+				_spritesCount--;
+			}
+			
+			// Dispatch change event.
+			if (hasEventListener(Event.CHANGE))
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			return true;
+		}
+		
 		public function getSprite(id:uint) : Sprite
 		{
 			var sprite : Sprite;
