@@ -185,37 +185,78 @@ package nail.otlib.sprites
 		{
 			var sprite : Sprite;
 			var id : uint;
-			if (pixels != null)
+			
+			if (pixels == null)
 			{
-				id = _spritesCount + 1;
-				sprite = new Sprite(id);
-				if (sprite.setBytes(pixels) == true)
-				{
-					_sprites[id] = sprite;
-					_spritesCount = id;
-					dispatchEvent(new Event(Event.CHANGE));
-				}	
-				pixels.position = 0; 
-				return true;
+				throw new ArgumentError("Parameter pixels cannot be null.");
 			}
-			return false;
+			
+			if (pixels.length != Sprite.SPRITE_DATA_SIZE)
+			{
+				throw new ArgumentError("Parameter pixels has an invalid length.");
+			}
+			
+			id = _spritesCount + 1;
+			sprite = new Sprite(id);
+			if (!sprite.setBytes(pixels))
+			{
+				return false;
+			}
+			
+			// Add sprite to list.
+			_sprites[id] = sprite;
+			_spritesCount = id;
+			
+			// Return ByteArray point.
+			pixels.position = 0; 
+			
+			// Dispatch change event.
+			if (hasEventListener(Event.CHANGE))
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			return true;
 		}
 		
 		public function replaceSprite(index:uint, pixels:ByteArray) : Boolean
 		{
 			var sprite : Sprite;
-			if (index > 0 && index < _spritesCount && pixels)
+			
+			if (index == 0 || index > _spritesCount)
 			{
-				sprite = new Sprite(index);
-				if (sprite.setBytes(pixels) == true)
-				{
-					_sprites[index] = sprite; 
-					dispatchEvent(new Event(Event.CHANGE));
-				}
-				pixels.position = 0; 
-				return true;
+				throw new ArgumentError("Parameter index is out of range.");
 			}
-			return false;
+			
+			if (pixels == null) 
+			{
+				throw new ArgumentError("Parameter pixels cannot be null.");
+			}
+			
+			if (pixels.length != Sprite.SPRITE_DATA_SIZE) 
+			{
+				throw new ArgumentError("Parameter pixels has an invalid length.");
+			}
+			
+			sprite = new Sprite(index);
+			if (!sprite.setBytes(pixels))
+			{
+				return false;
+			}
+			
+			// Add sprite to list.
+			_sprites[index] = sprite;
+			
+			// Return ByteArray point.
+			pixels.position = 0; 
+			
+			// Dispatch change event.
+			if (hasEventListener(Event.CHANGE))
+			{
+				dispatchEvent(new Event(Event.CHANGE));
+			}
+			
+			return true;
 		}
 		
 		public function getSprite(id:uint) : Sprite
@@ -288,7 +329,17 @@ package nail.otlib.sprites
 			var bmp2 : BitmapData;
 			var otherPixels : ByteArray;
 			
-			if (hasSpriteId(id) && pixels != null)
+			if (pixels == null) 
+			{
+				throw new ArgumentError("Parameter pixels cannot be null.");
+			}
+			
+			if (pixels.length != Sprite.SPRITE_DATA_SIZE) 
+			{
+				throw new ArgumentError("Parameter pixels has an invalid length.");
+			}
+			
+			if (hasSpriteId(id))
 			{
 				pixels.position = 0;
 				bmp1 = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0xFFFF00FF);
