@@ -345,6 +345,61 @@ package nail.otlib.things
 			return true;
 		}
 		
+		public function removeThing(id:uint, category:String) : Boolean
+		{
+			var thing : ThingType;
+			
+			if (StringUtil.isEmptyOrNull(category))
+			{
+				throw new ArgumentError("Parameter category cannot be null or empty.");
+			}
+			
+			if (ThingCategory.getCategory(category) == null)
+			{
+				throw new Error(StringUtil.substitute("Invalid category {0}.", category));
+			}
+			
+			if (!hasThingType(category, id))
+			{
+				throw new Error(StringUtil.substitute("{0} id {1} not found.",
+					StringUtil.capitaliseFirstLetter(category), id));
+			}
+			
+			switch(category)
+			{
+				case ThingCategory.ITEM:
+				{
+					_itemsCount = onRemoveThing(id, category, _items, _itemsCount);
+					break;
+				}
+					
+				case ThingCategory.OUTFIT:
+				{
+					_outfitsCount = onRemoveThing(id, category, _outfits, _outfitsCount);
+					break;
+				}
+					
+				case ThingCategory.EFFECT:
+				{
+					_effectsCount = onRemoveThing(id, category, _effects, _effectsCount);
+					break;
+				}
+					
+				case ThingCategory.MISSILE:
+				{
+					_missilesCount = onRemoveThing(id, category, _missiles, _missilesCount);
+					break;
+				}
+			}
+			
+			if (hasEventListener(Event.CHANGE))
+			{
+				dispatchEvent(new Event(Event.CHANGE))
+			}
+			
+			return true;
+		}
+		
 		public function compile(file:File, version:AssetsVersion) : Boolean
 		{
 			var stream : FileStream;
@@ -441,6 +496,25 @@ package nail.otlib.things
 				return ThingType(_missiles[id]);
 			}
 			return null;
+		}
+		
+		public function getCategoryCount(category:String) : uint
+		{
+			if (_loaded && ThingCategory.getCategory(category) != null)
+			{
+				switch(category)
+				{
+					case ThingCategory.ITEM:
+						return _itemsCount;
+					case ThingCategory.OUTFIT:
+						return _outfitsCount;
+					case ThingCategory.EFFECT:
+						return _effectsCount;
+					case ThingCategory.MISSILE:
+						return _missilesCount;
+				}	
+			}
+			return 0;
 		}
 		
 		public function clear() : void
@@ -1294,6 +1368,25 @@ package nail.otlib.things
 				}
 			}
 			return true;
+		}
+		
+		private function onRemoveThing(id:uint, category:String, list:Dictionary, length:uint) : uint
+		{
+			var thing :ThingType;
+			
+			if (id == length)
+			{
+				delete list[id];
+				length = Math.max(0, length - 1);
+			}
+			else 
+			{
+				thing = ThingUtils.createThing();
+				thing.category = category;
+				thing.id = id;
+				list[id] = thing;
+			}
+			return length;
 		}
 		
 		private function dispatchErrorEvent(message:String) : void
