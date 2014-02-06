@@ -43,5 +43,6 @@ package
 		import nail.otlib.components.skins.EightBitColorPickerSkin; EightBitColorPickerSkin;
 		import nail.otlib.components.skins.HSIColorPickerSkin; HSIColorPickerSkin;
 		import nail.otlib.components.controls.ThingView; ThingView;
+		import nail.otlib.components.controls.ExportWindow; ExportWindow;
 	}
 }

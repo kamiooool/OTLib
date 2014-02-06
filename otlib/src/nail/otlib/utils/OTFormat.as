@@ -1,5 +1,3 @@
-<?xml version="1.0"?>
-<!--
 ///////////////////////////////////////////////////////////////////////////////////
 // 
 //  Copyright (c) 2014 <nailsonnego@gmail.com>
@@ -23,34 +21,34 @@
 //  THE SOFTWARE.
 //
 ///////////////////////////////////////////////////////////////////////////////////
--->
 
-<!--
+package nail.otlib.utils
+{
+	import nail.errors.AbstractClassError;
 
-	Nail OTLib Components
-
--->
-
-<componentPackage>
-	
-	<!-- CheckerBoard -->
-	<component id="CheckerBoard" class="nail.otlib.components.controls.CheckerBoard"/>
-	<!-- ThingTypeEditor -->
-	<component id="ThingTypeEditor" class="nail.otlib.components.controls.ThingTypeEditor"/>
-	<!-- HSIColorPanel -->
-	<component id="HSIColorPanel" class="nail.otlib.components.controls.HSIColorPanel"/>
-	<!-- HSIColorPicker -->
-	<component id="HSIColorPicker" class="nail.otlib.components.controls.HSIColorPicker"/>
-	<!-- HSIColorPickerSkin -->
-	<component id="HSIColorPickerSkin" class="nail.otlib.components.skins.HSIColorPickerSkin"/>
-	<!-- EightBitColorPanel -->
-	<component id="EightBitColorPanel" class="nail.otlib.components.controls.EightBitColorPanel"/>
-	<!-- EightBitColorPicker -->
-	<component id="EightBitColorPicker" class="nail.otlib.components.controls.EightBitColorPicker"/>
-	<!-- EightBitColorPickerSkin -->
-	<component id="EightBitColorPickerSkin" class="nail.otlib.components.skins.EightBitColorPickerSkin"/>
-	<!-- ThingView -->
-	<component id="ThingView" class="nail.otlib.components.controls.ThingView"/>
-	<!-- ExportWindow -->
-	<component id="ExportWindow" class="nail.otlib.components.controls.ExportWindow"/>
-</componentPackage>
+	public final class OTFormat
+	{
+		//--------------------------------------------------------------------------
+		//
+		// CONSTRUCTOR
+		//
+		//--------------------------------------------------------------------------
+		
+		public function OTFormat()
+		{
+			throw new AbstractClassError(OTFormat);
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		// STATIC
+		//
+		//--------------------------------------------------------------------------
+		
+		static public const OTBM : String = "otbm";
+		
+		static public const OTB : String = "otb";
+		
+		static public const OBD : String = "obd";
+	}
+}
