@@ -16,6 +16,7 @@
     <classEntry path="nail.otlib.components.controls.EightBitColorPanel"/>
     <classEntry path="nail.otlib.components.controls.EightBitColorPicker"/>
     <classEntry path="nail.otlib.components.skins.EightBitColorPickerSkin"/>
+    <classEntry path="nail.otlib.utils.SpriteUtils"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>
