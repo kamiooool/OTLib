@@ -25,6 +25,8 @@
 package nail.otlib.utils
 {
 	import flash.display.BitmapData;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import flash.utils.CompressionAlgorithm;
 	import flash.utils.Endian;
@@ -118,6 +120,10 @@ package nail.otlib.utils
 		//
 		//--------------------------------------------------------------------------
 		
+		static private const RECTANGLE : Rectangle = new Rectangle(0, 0, 32, 32);
+		
+		static private const POINT : Point = new Point();
+		
 		static public function serialize(data:ThingData, version:AssetsVersion) : ByteArray
 		{
 			var bytes : ByteArray;
@@ -205,6 +211,133 @@ package nail.otlib.utils
 			}
 			
 			return readThingSprites(thing, bytes);
+		}
+		
+		static public function getSpriteSheet(data:ThingData) : BitmapData
+		{
+			var thing : ThingType;
+			var width : int;
+			var height : int;
+			var layers : int;
+			var patternX : int;
+			var patternY : int;
+			var patternZ : int;
+			var frames : int;
+			var size : uint;
+			var x : int;
+			var y : int;
+			var z : int;
+			var l : int;
+			var f : int;
+			var w : int;
+			var h : int;
+			var fx : int;
+			var fy : int;
+			var px : int;
+			var py : int;
+			var index : uint;
+			var totalX : int;
+			var totalY : int;
+			var bitmapWidth : Number;
+			var bitmapHeight : Number;
+			var pixelsWidth : int;
+			var pixelsHeight : int;
+			var bitmap : BitmapData;
+			
+			if (data == null)
+			{
+				throw new ArgumentError("Parameter data cannot be null.");
+			}
+			
+			thing = data.thing;
+			width = thing.width;
+			height = thing.height;
+			layers = thing.layers;
+			patternX = thing.patternX;
+			patternY = thing.patternY;
+			patternZ = thing.patternZ;
+			frames = thing.frames;
+			size = Sprite.SPRITE_PIXELS;
+			
+			totalX = patternZ * patternX * layers;
+			totalY = frames * patternY;
+			bitmapWidth = (totalX * width) * size;
+			bitmapHeight = (totalY * height) * size;
+			pixelsWidth  = width * size
+			pixelsHeight = height * size;
+			bitmap = new BitmapData(bitmapWidth, bitmapHeight, true, 0xFFFF00FF);
+			
+			for (f = 0; f < frames; f++)
+			{
+				for (z = 0; z < patternZ; z++)
+				{
+					for (y = 0; y < patternY; y++)
+					{
+						for (x = 0; x < patternX; x++)
+						{
+							for (l = 0; l < layers; l++)
+							{
+								index = getFrameIndex(thing, f, x, y, z, l);
+								fx = (index % totalX) * pixelsWidth;
+								fy = Math.floor(index / totalX) * pixelsHeight;
+								
+								for (w = 0; w < width; w++)
+								{
+									for (h = 0; h < height; h++)
+									{
+										index = getSpriteIndex(thing, w, h, l, x, y, z, f);
+										px = ((width - w - 1) * size);
+										py = ((height - h - 1) * size);
+										copyPixels(data, index, bitmap, px + fx, py + fy);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			return bitmap;
+		}
+		
+		static private function getFrameIndex(thing:ThingType, f:int, x:int, y:int, z:int, l:int) : int
+		{
+			return (((f % thing.frames * thing.patternZ + z) * thing.patternY + y) * thing.patternX + x) * thing.layers + l;
+		}
+		
+		
+		static private function getSpriteIndex(thing:ThingType, w:int, h:int, l:int, x:int, y:int, z:int, f:int) : uint
+		{
+			return ((((((f % thing.frames)
+				* thing.patternZ + z)
+				* thing.patternY + y)
+				* thing.patternX + x)
+				* thing.layers + l)
+				* thing.height + h)
+				* thing.width + w;
+		}
+		
+		static private function copyPixels(data:ThingData, index:uint, bitmap:BitmapData, x:uint, y:uint) : void
+		{
+			var spriteData : SpriteData;
+			var bmp : BitmapData;
+			
+			if (index < data.length)
+			{
+				spriteData = data.sprites[index];
+				if (spriteData != null && spriteData.pixels != null)
+				{
+					POINT.x = x;
+					POINT.y = y;
+					
+					bmp = spriteData.getBitmap();
+					if (bmp != null)
+					{
+						spriteData.pixels.position = 0;
+						bitmap.copyPixels(bmp, RECTANGLE, POINT, null, null, true);
+					}
+				}
+			}
 		}
 		
 		static private function writeProperties(bytes:ByteArray, thing:ThingType) : Boolean
