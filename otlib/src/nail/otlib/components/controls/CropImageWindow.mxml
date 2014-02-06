@@ -37,6 +37,7 @@
 		  fontSize="11"
 		  backgroundColor="0x494949"
 		  showStatusBar="false"
+		  title="Crop Image"
 		  closing="windowClosingHandler(event)">
 	
 	<s:layout>
