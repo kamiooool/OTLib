@@ -23,6 +23,8 @@
 package nail.otlib.utils
 {
 	import flash.display.BitmapData;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	
 	import nail.otlib.sprites.Sprite;
@@ -60,7 +62,10 @@ package nail.otlib.utils
 		// Public
 		//--------------------------------------
 		
-		public function getBitmap() : BitmapData
+		/**
+		 * @param backgroundColor A 32-bit ARGB color value.
+		 */
+		public function getBitmap(backgroundColor:uint = 0x00000000) : BitmapData
 		{
 			var bitmap : BitmapData;
 			
@@ -69,8 +74,9 @@ package nail.otlib.utils
 				try
 				{
 					pixels.position = 0;
-					bitmap = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0x00FF00FF);
-					bitmap.setPixels(bitmap.rect, pixels);
+					BITMAP.setPixels(RECTANGLE, pixels);
+					bitmap = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, backgroundColor);
+					bitmap.copyPixels(BITMAP, RECTANGLE, POINT, null, null, true);
 				} 
 				catch(error:Error)
 				{
@@ -80,5 +86,17 @@ package nail.otlib.utils
 			}
 			return null;
 		}
+		
+		//--------------------------------------------------------------------------
+		//
+		// STATIC
+		//
+		//--------------------------------------------------------------------------
+		
+		static private const RECTANGLE : Rectangle = new Rectangle(0, 0, Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS);
+		
+		static private const POINT : Point = new Point();
+		
+		static private const BITMAP : BitmapData = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0xFFFF00FF);
 	}
 }
