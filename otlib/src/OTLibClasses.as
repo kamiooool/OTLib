@@ -44,5 +44,7 @@ package
 		import nail.otlib.components.skins.HSIColorPickerSkin; HSIColorPickerSkin;
 		import nail.otlib.components.controls.ThingView; ThingView;
 		import nail.otlib.components.controls.ExportWindow; ExportWindow;
+		import nail.otlib.components.controls.SpriteList; SpriteList;
+		import nail.otlib.components.renders.SpriteListRenderer; SpriteListRenderer;
 	}
 }

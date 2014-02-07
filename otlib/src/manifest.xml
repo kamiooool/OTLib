@@ -27,7 +27,7 @@
 
 <!--
 
-	Nail OTLib Components
+	OTLib Components
 
 -->
 
@@ -53,4 +53,8 @@
 	<component id="ThingView" class="nail.otlib.components.controls.ThingView"/>
 	<!-- ExportWindow -->
 	<component id="ExportWindow" class="nail.otlib.components.controls.ExportWindow"/>
+	<!-- SpriteList -->
+	<component id="SpriteList" class="nail.otlib.components.controls.SpriteList"/>
+	<!-- SpriteListRenderer -->
+	<component id="SpriteListRenderer" class="nail.otlib.components.renders.SpriteListRenderer"/>
 </componentPackage>
