@@ -330,10 +330,6 @@ package nail.otlib.things
 				{
 					this[name] = thing[name];
 				}
-				else
-				{
-					trace("ThingTypeBind no has property " + name);
-				}
 			}	
 			
 			if (thing.spriteIndex)

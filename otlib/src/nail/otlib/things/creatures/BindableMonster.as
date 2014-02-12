@@ -181,7 +181,7 @@ package nail.otlib.things.creatures
 			xml.appendChild(look);
 			
 			// -----< Flags >-----
-			flags = <flags/>;			
+			flags = <flags/>;
 			flag = <flag/>;
 			flag.@summonable = this.summonable == true ? 1 : 0;
 			flags.appendChild(flag);
