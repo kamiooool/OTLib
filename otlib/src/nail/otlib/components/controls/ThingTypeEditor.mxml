@@ -376,10 +376,16 @@
 			
 			protected function thingPropertyChangeHandler(event:PropertyChangeEvent) : void
 			{
+				var evt : ThingEditorEvent;
+				
 				if (!_loading)
 				{
 					_changed = true;
-					dispatchEvent(new ThingEditorEvent(ThingEditorEvent.THING_PROPERTY_CHANGE, this.thingData));
+					evt = new ThingEditorEvent(ThingEditorEvent.THING_PROPERTY_CHANGE, this.thingData);
+					evt.property = BindableThingType.toLabel(event.property as String);
+					evt.oldValue = event.oldValue;
+					evt.newValue = event.newValue;
+					dispatchEvent(evt);
 				}
 			}
 			

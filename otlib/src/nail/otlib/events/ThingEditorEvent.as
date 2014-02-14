@@ -25,7 +25,7 @@
 package nail.otlib.events
 {
 	import flash.events.Event;
-
+	
 	import nail.otlib.utils.ThingData;
 	
 	public class ThingEditorEvent extends Event
@@ -40,18 +40,32 @@ package nail.otlib.events
 		
 		public var sprite : uint;
 		
+		public var property : Object;
+		
+		public var oldValue : Object;
+		
+		public var newValue : Object;
+		
 		//--------------------------------------------------------------------------
 		//
 		// CONSTRUCTOR
 		//
 		//--------------------------------------------------------------------------
 		
-		public function ThingEditorEvent(type:String, data:ThingData, sprite:uint = 0, bubbles:Boolean = false, cancelable:Boolean = false)
+		public function ThingEditorEvent(type:String,
+										 data:ThingData,
+										 sprite:uint = 0,
+										 property:Object = null,
+										 oldValue:Object = null, 
+										 newValue:Object = null)
 		{
-			super(type, bubbles, cancelable);
+			super(type);
 			
 			this.data = data;
 			this.sprite = sprite;
+			this.property = property;
+			this.oldValue = oldValue;
+			this.newValue = newValue;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -66,7 +80,12 @@ package nail.otlib.events
 		
 		override public function clone() : Event
 		{
-			return new ThingEditorEvent(this.type, this.data, this.sprite, this.bubbles, this.cancelable);
+			return new ThingEditorEvent(this.type,
+										this.data,
+										this.sprite,
+										this.property,
+										this.oldValue, 
+										this.newValue);
 		}
 		
 		//--------------------------------------------------------------------------

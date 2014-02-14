@@ -26,12 +26,14 @@ package nail.otlib.things
 {
 	import flash.display.BitmapData;
 	import flash.events.EventDispatcher;
+	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	
 	import mx.events.PropertyChangeEvent;
 	
 	import nail.otlib.utils.SpriteData;
 	import nail.otlib.utils.ThingData;
+	import nail.utils.StringUtil;
 
 	public class BindableThingType extends EventDispatcher
 	{
@@ -260,15 +262,25 @@ package nail.otlib.things
 		
 		public function setSprite(index:uint, sprite:SpriteData) : void
 		{
+			var event : PropertyChangeEvent;
+			var oldValue : uint;
+			
+			oldValue = spriteIndex[index];
 			this.spriteIndex[index] = sprite.id;
 			this.sprites[index] = sprite;
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE));
+			
+			event = new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE);
+			event.property = "spriteIndex";
+			event.oldValue = oldValue;
+			event.newValue = sprite.id;
+			dispatchEvent(event);
 		}
 		
 		public function setSpritesCount(length:uint) : void
 		{
 			this.spriteIndex.length = length;
 			this.sprites.length = length;
+			
 			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE));
 		}
 		
@@ -370,6 +382,89 @@ package nail.otlib.things
 				thing.spriteIndex = this.spriteIndex.concat();
 			}
 			return true;
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		// STATIC
+		//
+		//--------------------------------------------------------------------------
+		
+		static private const PROPERTY_LABEL : Dictionary = new Dictionary();
+		
+		PROPERTY_LABEL["id"] = "Id";
+		PROPERTY_LABEL["category"] = "Category";
+		PROPERTY_LABEL["width"] = "Width";
+		PROPERTY_LABEL["height"] = "Height";
+		PROPERTY_LABEL["exactSize"] = "Crop Size";
+		PROPERTY_LABEL["layers"] = "Layers";
+		PROPERTY_LABEL["patternX"] = "Pattern X";
+		PROPERTY_LABEL["patternY"] = "Pattern Y";
+		PROPERTY_LABEL["patternZ"] = "Pattern Z";
+		PROPERTY_LABEL["frames"] = "Frames";
+		PROPERTY_LABEL["isGround"] = "Ground";
+		PROPERTY_LABEL["groundSpeed"] = "Ground Speed";
+		PROPERTY_LABEL["isGroundBorder"] = "Clip";
+		PROPERTY_LABEL["isOnBottom"] = "Bottom";
+		PROPERTY_LABEL["isOnTop"] = "Top";
+		PROPERTY_LABEL["isContainer"] = "Container";
+		PROPERTY_LABEL["stackable"] = "Stackable";
+		PROPERTY_LABEL["forceUse"] = "Force Use";
+		PROPERTY_LABEL["multiUse"] = "Multi Use";
+		PROPERTY_LABEL["writable"] = "Writable";
+		PROPERTY_LABEL["writableOnce"] = "Writable Once";
+		PROPERTY_LABEL["maxTextLength"] = "Max Length";
+		PROPERTY_LABEL["isFluidContainer"] = "Fluid Container";
+		PROPERTY_LABEL["isFluid"] = "Fluid";
+		PROPERTY_LABEL["isUnpassable"] = "Unpassable";
+		PROPERTY_LABEL["isUnmoveable"] = "Unmoveable";
+		PROPERTY_LABEL["blockMissile"] = "Block Missile";
+		PROPERTY_LABEL["blockPathfind"] = "Block Pathfind";
+		PROPERTY_LABEL["noMoveAnimation"] = "No Move Animation";
+		PROPERTY_LABEL["pickupable"] = "Pickupable";
+		PROPERTY_LABEL["hangable"] = "Hangable";
+		PROPERTY_LABEL["isVertical"] = "Vertical";
+		PROPERTY_LABEL["isHorizontal"] = "Horizontal";
+		PROPERTY_LABEL["rotatable"] = "Rotatable";
+		PROPERTY_LABEL["hasOffset"] = "Has Offset";
+		PROPERTY_LABEL["offsetX"] = "Offset X";
+		PROPERTY_LABEL["offsetY"] = "Offset Y";
+		PROPERTY_LABEL["dontHide"] = "Don't Hide";
+		PROPERTY_LABEL["isTranslucent"] = "Translucent";
+		PROPERTY_LABEL["hasLight"] = "Has Light";
+		PROPERTY_LABEL["lightLevel"] = "Light Level";
+		PROPERTY_LABEL["lightColor"] = "Light Color";
+		PROPERTY_LABEL["hasElevation"] = "Has Elevation";
+		PROPERTY_LABEL["elevation"] = "Elevation Height";
+		PROPERTY_LABEL["isLyingObject"] = "Lying Object";
+		PROPERTY_LABEL["animateAlways"] = "Animate Always";
+		PROPERTY_LABEL["miniMap"] = "Automap";
+		PROPERTY_LABEL["miniMapColor"] = "Automap Color";
+		PROPERTY_LABEL["isLensHelp"] = "Lens Help";
+		PROPERTY_LABEL["lensHelp"] = "Lens Help Value";
+		PROPERTY_LABEL["isFullGround"] = "Full Ground";
+		PROPERTY_LABEL["ignoreLook"] = "Ignore Look";
+		PROPERTY_LABEL["cloth"] = "Equip";
+		PROPERTY_LABEL["clothSlot"] = "Slot";
+		PROPERTY_LABEL["isMarketItem"] = "Market";
+		PROPERTY_LABEL["marketName"] = "Name";
+		PROPERTY_LABEL["marketCategory"] = "Market Category";
+		PROPERTY_LABEL["marketTradeAs"] = "Trade As";
+		PROPERTY_LABEL["marketShowAs"] = "Show As";
+		PROPERTY_LABEL["marketRestrictProfession"] = "Vocation";
+		PROPERTY_LABEL["marketRestrictLevel"] = "Level";
+		PROPERTY_LABEL["hasDefaultAction"] = "Action";
+		PROPERTY_LABEL["defaultAction"] = "Action Type";
+		PROPERTY_LABEL["usable"] = "Usable";
+		PROPERTY_LABEL["spriteIndex"] = "Sprite Id";
+		
+		static public function toLabel(property:String) : String
+		{
+			if (!StringUtil.isEmptyOrNull(property) && PROPERTY_LABEL[property] !== undefined)
+			{
+				return PROPERTY_LABEL[property];
+			}
+			return "";
 		}
 	}
 }
