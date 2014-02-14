@@ -83,6 +83,8 @@ package nail.otlib.sprites
 		
 		private var _headSize : uint;
 		
+		private var _changed : Boolean;
+		
 		//--------------------------------------------------------------------------
 		//
 		// CONSTRUCTOR
@@ -176,6 +178,7 @@ package nail.otlib.sprites
 				_bitmap = new BitmapData(_rect.width, _rect.height, true, 0xFFFF00FF);
 				_loading = false;
 				_loaded = true;
+				_changed = false;
 				
 				dispatchEvent(event);
 			}
@@ -206,6 +209,7 @@ package nail.otlib.sprites
 			// Add sprite to list.
 			_sprites[id] = sprite;
 			_spritesCount = id;
+			_changed = true;
 			
 			// Return ByteArray point.
 			pixels.position = 0; 
@@ -246,6 +250,7 @@ package nail.otlib.sprites
 			
 			// Add sprite to list.
 			_sprites[index] = sprite;
+			_changed = true;
 			
 			// Return ByteArray point.
 			pixels.position = 0; 
@@ -268,6 +273,7 @@ package nail.otlib.sprites
 			
 			// Add a blank sprite at index.
 			_sprites[index] = new Sprite(index);
+			_changed = true;
 			
 			if (index == _spritesCount)
 			{
@@ -445,8 +451,19 @@ package nail.otlib.sprites
 			
 			_rawBytes.position = 0;
 			stream.endian = Endian.LITTLE_ENDIAN;
-			stream.writeUnsignedInt(version.sprSignature);
 			
+			// If is unmodified and the version is equal only save raw bytes.
+			if (!_changed && version.value == _version.value)
+			{
+				stream.writeBytes(_rawBytes, 0, _rawBytes.bytesAvailable);
+				stream.close();
+				dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, _spritesCount, _spritesCount));
+				return true;
+			}
+			
+			stream.writeUnsignedInt(version.sprSignature); // Write spr signature.
+			
+			// Write sprites count.
 			if (version.value >= 960)
 			{
 				stream.writeUnsignedInt(_spritesCount);
