@@ -173,10 +173,10 @@ package nail.otlib.things
 			_effectsCount = MIN_EFFECT_ID;
 			_missilesCount = MIN_MISSILE_ID;
 			
-			insert(ThingUtils.createThing(), ThingCategory.ITEM);
-			insert(ThingUtils.createThing(), ThingCategory.OUTFIT);
-			insert(ThingUtils.createThing(), ThingCategory.EFFECT);
-			insert(ThingUtils.createThing(), ThingCategory.MISSILE);
+			insert(ThingUtils.createThing(ThingCategory.ITEM), ThingCategory.ITEM);
+			insert(ThingUtils.createThing(ThingCategory.OUTFIT), ThingCategory.OUTFIT);
+			insert(ThingUtils.createThing(ThingCategory.EFFECT), ThingCategory.EFFECT);
+			insert(ThingUtils.createThing(ThingCategory.MISSILE), ThingCategory.MISSILE);
 			
 			_loading = false;
 			_loaded = true;	
@@ -1381,8 +1381,7 @@ package nail.otlib.things
 			}
 			else 
 			{
-				thing = ThingUtils.createThing();
-				thing.category = category;
+				thing = ThingUtils.createThing(category);
 				thing.id = id;
 				list[id] = thing;
 			}

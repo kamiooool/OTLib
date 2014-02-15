@@ -27,6 +27,7 @@ package nail.otlib.utils
 	import flash.utils.describeType;
 	
 	import nail.errors.AbstractClassError;
+	import nail.otlib.things.ThingCategory;
 	import nail.otlib.things.ThingType;
 	
 	public final class ThingUtils
@@ -72,10 +73,17 @@ package nail.otlib.utils
 			return newThing;
 		}
 		
-		static public function createThing() : ThingType
+		static public function createThing(category:String) : ThingType
 		{
 			var thing : ThingType;
+			
+			if (ThingCategory.getCategory(category) == null)
+			{
+				throw new ArgumentError("Invalid thing category.");
+			}
+			
 			thing = new ThingType();
+			thing.category = category;
 			thing.width = 1;
 			thing.height = 1;
 			thing.layers = 1;
@@ -84,8 +92,21 @@ package nail.otlib.utils
 			thing.patternY = 1;
 			thing.patternZ = 1;
 			thing.exactSize = 32;
-			thing.spriteIndex = new Vector.<uint>();
-			thing.spriteIndex[0] = 0;
+			
+			switch(category)
+			{
+				case ThingCategory.OUTFIT:
+					thing.patternX = 4;
+					thing.frames = 3;
+					break;
+				
+				case ThingCategory.MISSILE:
+					thing.patternX = 3;
+					thing.patternY = 3;
+					break;
+			}
+			
+			thing.spriteIndex = new Vector.<uint>(thing.patternX * thing.patternY * thing.frames);
 			return thing;
 		}
 	}
