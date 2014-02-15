@@ -46,5 +46,9 @@ package
 		import nail.otlib.components.controls.ExportWindow; ExportWindow;
 		import nail.otlib.components.controls.SpriteList; SpriteList;
 		import nail.otlib.components.renders.SpriteListRenderer; SpriteListRenderer;
+		import nail.otlib.components.controls.PatternSlider; PatternSlider;
+		import nail.otlib.components.skins.PatternSliderSkin; PatternSliderSkin;
+		import nail.otlib.components.skins.PatternSliderThumbSkin; PatternSliderThumbSkin;
+		import nail.otlib.components.skins.PatternSliderTrackSkin; PatternSliderTrackSkin;
 	}
 }

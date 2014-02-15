@@ -1,4 +1,3 @@
-/*
 ///////////////////////////////////////////////////////////////////////////////////
 // 
 //  Copyright (c) 2014 <nailsonnego@gmail.com>
@@ -22,29 +21,49 @@
 //  THE SOFTWARE.
 //
 ///////////////////////////////////////////////////////////////////////////////////
-*/
 
-@namespace s "library://ns.adobe.com/flex/spark";
-@namespace mx "library://ns.adobe.com/flex/mx";
-@namespace otlib "library://ns.nail.com/otlib";
-
-/*
-//--------------------------------------
-// NailLib components
-//--------------------------------------
-*/
-
-otlib|HSIColorPicker
+package nail.otlib.components.controls
 {
-	skinClass: ClassReference("nail.otlib.components.skins.HSIColorPickerSkin");
-}
-
-otlib|EightBitColorPicker
-{
-	skinClass: ClassReference("nail.otlib.components.skins.EightBitColorPickerSkin");
-}
-
-otlib|PatternSlider
-{
-	skinClass: ClassReference("nail.otlib.components.skins.PatternSliderSkin");
+	import spark.components.HSlider;
+	import spark.formatters.NumberFormatter;
+	
+	public class PatternSlider extends HSlider
+	{
+		//--------------------------------------------------------------------------
+		//
+		// PROPERTIES
+		//
+		//--------------------------------------------------------------------------
+		
+		private var _dataFormatter : NumberFormatter;
+		
+		//--------------------------------------------------------------------------
+		//
+		// CONSTRUCTOR
+		//
+		//--------------------------------------------------------------------------
+		
+		public function PatternSlider()
+		{
+			super();
+			
+			// Remove decimal value
+			_dataFormatter = new NumberFormatter();
+			this.dataTipFormatFunction = formatFunction;
+		}
+		//--------------------------------------------------------------------------
+		//
+		// METHODS
+		//
+		//--------------------------------------------------------------------------
+		
+		//--------------------------------------
+		// Private
+		//--------------------------------------
+		
+		private function formatFunction(text:String) : Number
+		{
+			return _dataFormatter.parseNumber(text);
+		}
+	}
 }
