@@ -152,21 +152,18 @@ package nail.otlib.sprites
 			
 			function completeHandler(event:Event) : void
 			{
-				var bytes : ByteArray;
-				
-				bytes = ByteArray(loader.data);
-				_rawBytes = bytes;
+				_rawBytes = ByteArray(loader.data);
 				_rawBytes.endian = Endian.LITTLE_ENDIAN;
-				_signature = bytes.readUnsignedInt();
+				_signature = _rawBytes.readUnsignedInt();
 				
 				if (version.value >= 960)
 				{
-					_spritesCount = bytes.readUnsignedInt();
+					_spritesCount = _rawBytes.readUnsignedInt();
 					_headSize = HEAD_SIZE_U32;
 				}
 				else 
 				{
-					_spritesCount = bytes.readUnsignedShort();
+					_spritesCount = _rawBytes.readUnsignedShort();
 					_headSize = HEAD_SIZE_U16;
 				}
 				
