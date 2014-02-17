@@ -181,6 +181,42 @@ package nail.otlib.sprites
 			}
 		}
 		
+		public function createNew(version:AssetsVersion) : Boolean
+		{
+			if (version == null)
+			{
+				throw new ArgumentError("Parameter version cannot be null.");
+			}
+			
+			if (_loading)
+			{
+				return false;
+			}
+			
+			if (this.loaded)
+			{
+				this.clear();
+			}
+			
+			_version = version;
+			_rawBytes = new ByteArray();
+			_rawBytes.endian = Endian.LITTLE_ENDIAN;
+			_signature = version.sprSignature;
+			_spritesCount = 0;
+			_headSize = version.value >= 960 ? HEAD_SIZE_U32 : HEAD_SIZE_U16;
+			_blankSprite = new Sprite(0);	
+			_sprites = new Dictionary();
+			_sprites[0] = _blankSprite;
+			_rect = new Rectangle(0, 0, Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS);
+			_point = new Point();
+			_bitmap = new BitmapData(_rect.width, _rect.height, true, 0xFFFF00FF);
+			_changed = true;
+			_loaded = true;
+			_loading = false;
+			
+			return true;
+		}
+		
 		public function addSprite(pixels:ByteArray) : Boolean
 		{
 			var sprite : Sprite;

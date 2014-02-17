@@ -147,7 +147,7 @@ package nail.otlib.things
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
-		public function createNew(version:AssetsVersion) : void
+		public function createNew(version:AssetsVersion) : Boolean
 		{
 			if (version == null)
 			{
@@ -156,7 +156,7 @@ package nail.otlib.things
 			
 			if (_loading)
 			{
-				return;
+				return false;
 			}
 			
 			if (this.loaded)
@@ -164,29 +164,35 @@ package nail.otlib.things
 				this.clear();
 			}
 			
+			_items = new Dictionary();
+			_outfits = new Dictionary();
+			_effects = new Dictionary();
+			_missiles = new Dictionary();
+			_signature = version.datSignature;
 			_itemsCount = MIN_ITEM_ID;
 			_outfitsCount = MIN_OUTFIT_ID;
 			_effectsCount = MIN_EFFECT_ID;
 			_missilesCount = MIN_MISSILE_ID;
 			
-			insert(ThingUtils.createThing(ThingCategory.ITEM), ThingCategory.ITEM);
-			insert(ThingUtils.createThing(ThingCategory.OUTFIT), ThingCategory.OUTFIT);
-			insert(ThingUtils.createThing(ThingCategory.EFFECT), ThingCategory.EFFECT);
-			insert(ThingUtils.createThing(ThingCategory.MISSILE), ThingCategory.MISSILE);
-			
 			_loading = false;
-			_loaded = true;	
-			dispatchEvent(new Event(Event.COMPLETE));
+			_loaded = true;
+			
+			insert(ThingUtils.createThing(ThingCategory.ITEM));
+			insert(ThingUtils.createThing(ThingCategory.OUTFIT));
+			insert(ThingUtils.createThing(ThingCategory.EFFECT));
+			insert(ThingUtils.createThing(ThingCategory.MISSILE));
+			
+			return true;
 		}
 		
-		public function insert(thing:ThingType, category:String, index:int = -1) : Boolean
+		public function insert(thing:ThingType, index:int = -1) : Boolean
 		{
-			if (!loaded || thing == null)
+			if (thing == null)
 			{
-				return false;
+				throw new ArgumentError("Parameter thing cannot be null.");
 			}
 			
-			switch(category)
+			switch(thing.category)
 			{
 				case ThingCategory.ITEM:
 				{	
@@ -195,7 +201,6 @@ package nail.otlib.things
 						index = _itemsCount;
 					}
 					_items[index] = thing;
-					_itemsCount++;
 					break;
 				}
 				
@@ -206,7 +211,6 @@ package nail.otlib.things
 						index = _outfitsCount;
 					}
 					_outfits[index] = thing;
-					_outfitsCount++;
 					break;
 				}
 				
@@ -217,7 +221,6 @@ package nail.otlib.things
 						index = _effectsCount;
 					}
 					_effects[index] = thing;
-					_effectsCount++;
 					break;
 				}
 				
@@ -228,7 +231,6 @@ package nail.otlib.things
 						index = _missilesCount;
 					}
 					_missiles[index] = thing;
-					_missilesCount++;
 					break;
 				}
 				
@@ -238,7 +240,6 @@ package nail.otlib.things
 				}
 			}
 			
-			thing.category = category;
 			thing.id = index;
 			dispatchEvent(new Event(Event.CHANGE));
 			return true;
