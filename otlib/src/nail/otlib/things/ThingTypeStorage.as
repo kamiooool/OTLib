@@ -154,13 +154,12 @@ package nail.otlib.things
 				throw new ArgumentError("Parameter version cannot be null.");
 			}
 			
-			if (_loading == true)
+			if (_loading)
 			{
-				dispatchErrorEvent("Não é possível criar quando está carregando.");
 				return;
 			}
 			
-			if (_loaded)
+			if (this.loaded)
 			{
 				this.clear();
 			}
@@ -1382,11 +1381,6 @@ package nail.otlib.things
 				list[id] = thing;
 			}
 			return length;
-		}
-		
-		private function dispatchErrorEvent(message:String) : void
-		{
-			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR, false, false, message));
 		}
 		
 		//--------------------------------------
