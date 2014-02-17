@@ -36,7 +36,6 @@ package nail.otlib.things
 	
 	import nail.otlib.assets.AssetsVersion;
 	import nail.otlib.sprites.Sprite;
-	import nail.otlib.sprites.SpriteStorage;
 	import nail.otlib.utils.ThingUtils;
 	import nail.utils.StringUtil;
 	
@@ -73,8 +72,6 @@ package nail.otlib.things
 		private var _missiles : Dictionary;
 		
 		private var _missilesCount : uint;
-		
-		private var _sprites : SpriteStorage;
 		
 		private var _thingsCount : uint;
 		
@@ -530,7 +527,6 @@ package nail.otlib.things
 			_signature = 0;
 			_progressCount = 0;
 			_thingsCount = 0;
-			_sprites = null;
 			_loading = false;
 			_loaded = false;
 		}
@@ -1493,16 +1489,6 @@ package nail.otlib.things
 		public function get loaded() : Boolean
 		{
 			return _loaded;
-		}
-		
-		public function get sprites() : SpriteStorage
-		{
-			return _sprites;
-		}
-		
-		public function set sprites(value:SpriteStorage) : void
-		{
-			_sprites = value;
 		}
 		
 		//--------------------------------------------------------------------------
