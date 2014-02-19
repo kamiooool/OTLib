@@ -84,8 +84,6 @@ package nail.otlib.components.controls
 			
 			if (instance === colorPanel)
 			{
-				trace("HSIColorPicker.partAdded(partName, instance)");
-				
 				colorPanel.addEventListener(Event.CHANGE, colorPanelChangeHandler);
 			}
 		}
