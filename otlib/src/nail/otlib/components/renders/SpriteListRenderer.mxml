@@ -96,18 +96,24 @@
 			static private function createContextMenu() : ContextMenu
 			{
 				var menu : ContextMenu;
+				var copyMenu : ContextMenuItem;
+				var pasteMenu : ContextMenuItem;
 				var replaceMenu : ContextMenuItem;
 				var exportMenu : ContextMenuItem;
 				var removeMenu : ContextMenuItem;
 				
-				replaceMenu = new ContextMenuItem("Replace");
+				copyMenu = new ContextMenuItem("Copy");
+				copyMenu.data = SpriteListEvent.COPY;
+				pasteMenu = new ContextMenuItem("Paste");
+				pasteMenu.data = SpriteListEvent.PASTE;
+				replaceMenu = new ContextMenuItem("Replace", true);
 				replaceMenu.data = SpriteListEvent.REPLACE;
 				exportMenu = new ContextMenuItem("Export");
 				exportMenu.data = SpriteListEvent.EXPORT;
 				removeMenu = new ContextMenuItem("Remove");
 				removeMenu.data = SpriteListEvent.REMOVE;
 				menu = new ContextMenu();
-				menu.customItems = [replaceMenu, exportMenu, removeMenu];
+				menu.customItems = [copyMenu, pasteMenu, replaceMenu, exportMenu, removeMenu];
 				
 				return menu;
 			}

@@ -33,6 +33,10 @@ package nail.otlib.components.controls
 	import nail.otlib.events.SpriteListEvent;
 	import nail.otlib.utils.SpriteData;
 	
+	[Event(name="copy", type="nail.otlib.events.SpriteListEvent")]
+	
+	[Event(name="paste", type="nail.otlib.events.SpriteListEvent")]
+	
 	[Event(name="replace", type="nail.otlib.events.SpriteListEvent")]
 	
 	[Event(name="export", type="nail.otlib.events.SpriteListEvent")]
@@ -77,6 +81,14 @@ package nail.otlib.components.controls
 				{
 					switch(type)
 					{
+						case SpriteListEvent.COPY:
+							event = new SpriteListEvent(SpriteListEvent.COPY, spriteData);
+							break;
+						
+						case SpriteListEvent.PASTE:
+							event = new SpriteListEvent(SpriteListEvent.PASTE, spriteData);
+							break;
+						
 						case SpriteListEvent.REPLACE:
 							event = new SpriteListEvent(SpriteListEvent.REPLACE, spriteData);
 							break;
