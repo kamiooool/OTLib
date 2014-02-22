@@ -541,7 +541,7 @@
 				if(!showGridCheckBox.selected) { button.alpha = 0; }
 				index = uint(button.label);
 				source = event.dragSource;
-				spriteData = source.dataForFormat(source.formats[0])[0];
+				spriteData = source.dataForFormat(source.formats[0])[0] as SpriteData;
 				if (spriteData != null)
 				{
 					_thingBinding.setSprite(index, spriteData);
