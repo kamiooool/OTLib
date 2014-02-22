@@ -20,6 +20,7 @@
     <classEntry path="nail.otlib.utils.OTFormat"/>
     <classEntry path="nail.otlib.components.controls.SpriteList"/>
     <classEntry path="nail.otlib.events.SpriteListEvent"/>
+    <classEntry path="nail.otlib.loaders.ThingDataLoader"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests>

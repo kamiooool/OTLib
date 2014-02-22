@@ -50,5 +50,6 @@ package
 		import nail.otlib.components.skins.PatternSliderSkin; PatternSliderSkin;
 		import nail.otlib.components.skins.PatternSliderThumbSkin; PatternSliderThumbSkin;
 		import nail.otlib.components.skins.PatternSliderTrackSkin; PatternSliderTrackSkin;
+		import nail.otlib.loaders.ThingDataLoader; ThingDataLoader;
 	}
 }
