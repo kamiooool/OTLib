@@ -502,17 +502,7 @@
 		
 		<s:Spacer height="3"/>
 		
-		<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="0x272727"/>
-			</s:stroke>
-			<s:filters>
-				<s:DropShadowFilter blurX="1"
-									blurY="1"
-									distance="1"
-									color="0x636363"/>
-			</s:filters>
-		</s:Line>
+		<nail:ShadowLine width="100%"/>
 		
 		<s:Spacer height="3"/>
 		
@@ -579,17 +569,7 @@
 		
 		<s:Spacer height="3"/>
 		
-		<s:Line width="100%">
-			<s:stroke>
-				<s:SolidColorStroke color="0x272727"/>
-			</s:stroke>
-			<s:filters>
-				<s:DropShadowFilter blurX="1"
-									blurY="1"
-									distance="1"
-									color="0x636363"/>
-			</s:filters>
-		</s:Line>
+		<nail:ShadowLine width="100%"/>
 		
 		<s:Spacer height="3"/>
 		
