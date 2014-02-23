@@ -64,7 +64,6 @@
 			import nail.codecs.ImageFormat;
 			import nail.otlib.assets.AssetsVersion;
 			import nail.otlib.utils.OTFormat;
-			import nail.utils.StringUtil;
 			
 			//--------------------------------------------------------------------------
 			//
@@ -304,7 +303,7 @@
 			
 			public function set format(value:String) : void
 			{
-				if (StringUtil.isEmptyOrNull(value) || !_enableObdFormat && value == OTFormat.OBD)
+				if (isNullOrEmpty(value) || !_enableObdFormat && value == OTFormat.OBD)
 				{
 					value = ImageFormat.PNG;
 				}

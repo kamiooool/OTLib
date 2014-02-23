@@ -56,7 +56,7 @@ package nail.otlib.things
 		
 		static public function getCategory(value:String) : String
 		{
-			if (!StringUtil.isEmptyOrNull(value))
+			if (!isNullOrEmpty(value))
 			{
 				value = StringUtil.toKeyString(value);
 				switch (value)

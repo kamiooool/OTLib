@@ -346,7 +346,7 @@ package nail.otlib.things
 		{
 			var thing : ThingType;
 			
-			if (StringUtil.isEmptyOrNull(category))
+			if (isNullOrEmpty(category))
 			{
 				throw new ArgumentError("Parameter category cannot be null or empty.");
 			}

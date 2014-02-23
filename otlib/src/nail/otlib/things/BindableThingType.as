@@ -33,7 +33,6 @@ package nail.otlib.things
 	
 	import nail.otlib.utils.SpriteData;
 	import nail.otlib.utils.ThingData;
-	import nail.utils.StringUtil;
 
 	public class BindableThingType extends EventDispatcher
 	{
@@ -460,7 +459,7 @@ package nail.otlib.things
 		
 		static public function toLabel(property:String) : String
 		{
-			if (!StringUtil.isEmptyOrNull(property) && PROPERTY_LABEL[property] !== undefined)
+			if (!isNullOrEmpty(property) && PROPERTY_LABEL[property] !== undefined)
 			{
 				return PROPERTY_LABEL[property];
 			}
