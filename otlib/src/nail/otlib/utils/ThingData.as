@@ -32,11 +32,13 @@ package nail.otlib.utils
 	import flash.utils.Endian;
 	
 	import nail.otlib.assets.AssetsVersion;
+	import nail.otlib.geom.Rect;
 	import nail.otlib.sprites.Sprite;
 	import nail.otlib.things.ThingCategory;
 	import nail.otlib.things.ThingType;
-	import nail.otlib.things.ThingTypeFlags;
+	import nail.otlib.things.ThingTypeFlags1;
 	import nail.otlib.things.ThingTypeFlags2;
+	import nail.otlib.things.ThingTypeFlags3;
 	import nail.otlib.things.ThingTypeStorage;
 	import nail.utils.StringUtil;
 	
@@ -145,16 +147,23 @@ package nail.otlib.utils
 			bytes.writeShort(version.value); // Write client version
 			bytes.writeUTF(thing.category);  // Write thing category
 			
-			if (version.value >= 1010)
+			if (version.value <= 854)
 			{
-				if (!writeProperties2(bytes, thing))
+				if (!writeProperties1(bytes, thing))
+				{
+					return null;
+				}
+			}
+			else if (version.value >= 1010)
+			{
+				if (!writeProperties3(bytes, thing))
 				{
 					return null;
 				}
 			}
 			else
 			{
-				if (!writeProperties(bytes, thing))
+				if (!writeProperties2(bytes, thing))
 				{
 					return null;
 				}
@@ -195,16 +204,23 @@ package nail.otlib.utils
 				throw new Error("Invalid thing category.");
 			}
 			
-			if (version.value >= 1010)
+			if (version.value <= 854)
 			{
-				if (!readThingType2(thing, bytes))
+				if (!readThingType1(thing, bytes))
+				{
+					return null;
+				}
+			}
+			else if (version.value >= 1010)
+			{
+				if (!readThingType3(thing, bytes))
 				{
 					return null;
 				}
 			}
 			else 
 			{
-				if (!readThingType(thing, bytes))
+				if (!readThingType2(thing, bytes))
 				{
 					return null;
 				}
@@ -213,24 +229,24 @@ package nail.otlib.utils
 			return readThingSprites(thing, bytes);
 		}
 		
-		static public function getSpriteSheet(data:ThingData) : BitmapData
+		static public function getSpriteSheet(data:ThingData, textureIndex:Vector.<Rect> = null) : BitmapData
 		{
 			var thing : ThingType;
-			var width : int;
-			var height : int;
-			var layers : int;
-			var patternX : int;
-			var patternY : int;
-			var patternZ : int;
-			var frames : int;
+			var width : uint;
+			var height : uint;
+			var layers : uint;
+			var patternX : uint;
+			var patternY : uint;
+			var patternZ : uint;
+			var frames : uint;
 			var size : uint;
-			var x : int;
-			var y : int;
-			var z : int;
-			var l : int;
-			var f : int;
-			var w : int;
-			var h : int;
+			var x : uint;
+			var y : uint;
+			var z : uint;
+			var l : uint;
+			var f : uint;
+			var w : uint;
+			var h : uint;
 			var fx : int;
 			var fy : int;
 			var px : int;
@@ -259,6 +275,7 @@ package nail.otlib.utils
 			frames = thing.frames;
 			size = Sprite.SPRITE_PIXELS;
 			
+			// -----< Measure and create bitmap>-----
 			totalX = patternZ * patternX * layers;
 			totalY = frames * patternY;
 			bitmapWidth = (totalX * width) * size;
@@ -266,6 +283,11 @@ package nail.otlib.utils
 			pixelsWidth  = width * size
 			pixelsHeight = height * size;
 			bitmap = new BitmapData(bitmapWidth, bitmapHeight, true, 0xFFFF00FF);
+			
+			if (textureIndex != null)
+			{
+				textureIndex.length = layers * patternX * patternY * patternZ * frames;
+			}
 			
 			for (f = 0; f < frames; f++)
 			{
@@ -277,9 +299,14 @@ package nail.otlib.utils
 						{
 							for (l = 0; l < layers; l++)
 							{
-								index = getFrameIndex(thing, f, x, y, z, l);
+								index = getTextureIndex(thing, f, x, y, z, l);
 								fx = (index % totalX) * pixelsWidth;
 								fy = Math.floor(index / totalX) * pixelsHeight;
+								
+								if (textureIndex != null)
+								{
+									textureIndex[index] = new Rect(fx, fy, pixelsWidth, pixelsHeight);
+								}
 								
 								for (w = 0; w < width; w++)
 								{
@@ -300,13 +327,12 @@ package nail.otlib.utils
 			return bitmap;
 		}
 		
-		static private function getFrameIndex(thing:ThingType, f:int, x:int, y:int, z:int, l:int) : int
+		static private function getTextureIndex(thing:ThingType, f:int, x:int, y:int, z:int, l:int) : int
 		{
 			return (((f % thing.frames * thing.patternZ + z) * thing.patternY + y) * thing.patternX + x) * thing.layers + l;
 		}
 		
-		
-		static private function getSpriteIndex(thing:ThingType, w:int, h:int, l:int, x:int, y:int, z:int, f:int) : uint
+		static private function getSpriteIndex(thing:ThingType, w:uint, h:uint, l:uint, x:uint, y:uint, z:uint, f:uint) : uint
 		{
 			return ((((((f % thing.frames)
 				* thing.patternZ + z)
@@ -340,118 +366,110 @@ package nail.otlib.utils
 			}
 		}
 		
-		static private function writeProperties(bytes:ByteArray, thing:ThingType) : Boolean
+		/**
+		 * Write versions 8.00 - 8.54
+		 */
+		static private function writeProperties1(bytes:ByteArray, thing:ThingType) : Boolean
 		{
 			if (thing.isGround)
 			{
-				bytes.writeByte(ThingTypeFlags.GROUND); 
+				bytes.writeByte(ThingTypeFlags1.GROUND);
 				bytes.writeShort(thing.groundSpeed);
 			}
 			else if (thing.isGroundBorder)
 			{ 
-				bytes.writeByte(ThingTypeFlags.GROUND_BORDER);
+				bytes.writeByte(ThingTypeFlags1.GROUND_BORDER);
 			}
 			else if (thing.isOnBottom)
 			{
-				bytes.writeByte(ThingTypeFlags.ON_BOTTOM);
+				bytes.writeByte(ThingTypeFlags1.ON_BOTTOM);
 			}
 			else if (thing.isOnTop)
 			{
-				bytes.writeByte(ThingTypeFlags.ON_TOP);
+				bytes.writeByte(ThingTypeFlags1.ON_TOP);
 			}
 			
-			if (thing.isContainer) { bytes.writeByte(ThingTypeFlags.CONTAINER); }
-			if (thing.stackable) { bytes.writeByte(ThingTypeFlags.STACKABLE); }
-			if (thing.forceUse) { bytes.writeByte(ThingTypeFlags.FORCE_USE); }
-			if (thing.multiUse) { bytes.writeByte(ThingTypeFlags.MULTI_USE); }
+			if (thing.isContainer) { bytes.writeByte(ThingTypeFlags1.CONTAINER); }
+			if (thing.stackable) { bytes.writeByte(ThingTypeFlags1.STACKABLE); }
+			if (thing.forceUse) { bytes.writeByte(ThingTypeFlags1.FORCE_USE); }
+			if (thing.multiUse) { bytes.writeByte(ThingTypeFlags1.MULTI_USE); }
+			if (thing.hasCharges) { bytes.writeByte(ThingTypeFlags1.HAS_CHARGES) };
+			
 			if (thing.writable)
 			{
-				bytes.writeByte(ThingTypeFlags.WRITABLE);
+				bytes.writeByte(ThingTypeFlags1.WRITABLE);
 				bytes.writeShort(thing.maxTextLength);
 			}
+			
 			if (thing.writableOnce)
 			{
-				bytes.writeByte(ThingTypeFlags.WRITABLE_ONCE);
+				bytes.writeByte(ThingTypeFlags1.WRITABLE_ONCE);
 				bytes.writeShort(thing.maxTextLength);
 			}	
 			
-			if (thing.isFluidContainer) { bytes.writeByte(ThingTypeFlags.FLUID_CONTAINER); }
-			if (thing.isFluid) { bytes.writeByte(ThingTypeFlags.FLUID); }
-			if (thing.isUnpassable) { bytes.writeByte(ThingTypeFlags.UNPASSABLE); }
-			if (thing.isUnmoveable) { bytes.writeByte(ThingTypeFlags.UNMOVEABLE); }
-			if (thing.blockMissile) { bytes.writeByte(ThingTypeFlags.BLOCK_MISSILE); }
-			if (thing.blockPathfind) { bytes.writeByte(ThingTypeFlags.BLOCK_PATHFIND); }
-			if (thing.pickupable) { bytes.writeByte(ThingTypeFlags.PICKUPABLE); }
-			if (thing.hangable) { bytes.writeByte(ThingTypeFlags.HANGABLE); }
-			if (thing.isVertical) { bytes.writeByte(ThingTypeFlags.VERTICAL); }
-			if (thing.isHorizontal) { bytes.writeByte(ThingTypeFlags.HORIZONTAL); }
-			if (thing.rotatable) { bytes.writeByte(ThingTypeFlags.ROTATABLE); }
+			if (thing.isFluidContainer) { bytes.writeByte(ThingTypeFlags1.FLUID_CONTAINER); }
+			if (thing.isFluid) { bytes.writeByte(ThingTypeFlags1.FLUID); }
+			if (thing.isUnpassable) { bytes.writeByte(ThingTypeFlags1.UNPASSABLE); }
+			if (thing.isUnmoveable) { bytes.writeByte(ThingTypeFlags1.UNMOVEABLE); }
+			if (thing.blockMissile) { bytes.writeByte(ThingTypeFlags1.BLOCK_MISSILE); }
+			if (thing.blockPathfind) { bytes.writeByte(ThingTypeFlags1.BLOCK_PATHFIND); }
+			if (thing.pickupable) { bytes.writeByte(ThingTypeFlags1.PICKUPABLE); }
+			if (thing.hangable) { bytes.writeByte(ThingTypeFlags1.HANGABLE); }
+			if (thing.isVertical) { bytes.writeByte(ThingTypeFlags1.VERTICAL); }
+			if (thing.isHorizontal) { bytes.writeByte(ThingTypeFlags1.HORIZONTAL); }
+			if (thing.rotatable) { bytes.writeByte(ThingTypeFlags1.ROTATABLE); }
 			
 			if (thing.hasLight)
 			{
-				bytes.writeByte(ThingTypeFlags.HAS_LIGHT);
+				bytes.writeByte(ThingTypeFlags1.HAS_LIGHT);
 				bytes.writeShort(thing.lightLevel);
 				bytes.writeShort(thing.lightColor);
 			}
 			
-			if (thing.dontHide) { bytes.writeByte(ThingTypeFlags.DONT_HIDE); }
-			if (thing.isTranslucent) { bytes.writeByte(ThingTypeFlags.TRANSLUCENT); }
+			if (thing.dontHide) { bytes.writeByte(ThingTypeFlags1.DONT_HIDE); }
+			if (thing.floorChange) { bytes.writeByte(ThingTypeFlags1.FLOOR_CHANGE); }
 			
 			if (thing.hasOffset)
 			{
-				bytes.writeByte(ThingTypeFlags.HAS_OFFSET);
+				bytes.writeByte(ThingTypeFlags1.HAS_OFFSET);
 				bytes.writeShort(thing.offsetX);
 				bytes.writeShort(thing.offsetY);
 			}
 			
 			if (thing.hasElevation)
 			{
-				bytes.writeByte(ThingTypeFlags.HAS_ELEVATION);
+				bytes.writeByte(ThingTypeFlags1.HAS_ELEVATION);
 				bytes.writeShort(thing.elevation);
 			}
 			
-			if (thing.isLyingObject) { bytes.writeByte(ThingTypeFlags.LYING_OBJECT); }
-			if (thing.animateAlways) { bytes.writeByte(ThingTypeFlags.ANIMATE_ALWAYS); }
+			if (thing.isLyingObject) { bytes.writeByte(ThingTypeFlags1.LYING_OBJECT); }
+			if (thing.animateAlways) { bytes.writeByte(ThingTypeFlags1.ANIMATE_ALWAYS); }
 			
 			if (thing.miniMap)
 			{
-				bytes.writeByte(ThingTypeFlags.MINI_MAP);
+				bytes.writeByte(ThingTypeFlags1.MINI_MAP);
 				bytes.writeShort(thing.miniMapColor);
 			}
-			if (thing.lensHelp)
+			if (thing.isLensHelp)
 			{
-				bytes.writeByte(ThingTypeFlags.LENS_HELP);
+				bytes.writeByte(ThingTypeFlags1.LENS_HELP);
 				bytes.writeShort(thing.lensHelp);
 			}
-			if (thing.isFullGround) { bytes.writeByte(ThingTypeFlags.FULL_GROUND); }
-			if (thing.ignoreLook) { bytes.writeByte(ThingTypeFlags.IGNORE_LOOK); }
-			if (thing.cloth)
-			{
-				bytes.writeByte(ThingTypeFlags.CLOTH);
-				bytes.writeShort(thing.clothSlot);
-			}
+			if (thing.isFullGround) { bytes.writeByte(ThingTypeFlags1.FULL_GROUND); }
+			if (thing.ignoreLook) { bytes.writeByte(ThingTypeFlags1.IGNORE_LOOK); }
 			
-			if (thing.isMarketItem)
-			{
-				bytes.writeByte(ThingTypeFlags.MARKET_ITEM);
-				bytes.writeShort(thing.marketCategory);
-				bytes.writeShort(thing.marketTradeAs);
-				bytes.writeShort(thing.marketShowAs);
-				bytes.writeShort(thing.marketName.length);
-				bytes.writeMultiByte(thing.marketName, ThingTypeStorage.STRING_CHARSET);
-				bytes.writeShort(thing.marketRestrictProfession);
-				bytes.writeShort(thing.marketRestrictLevel);
-			}
-			
-			bytes.writeByte(ThingTypeFlags.LAST_FLAG); // Close flags
+			bytes.writeByte(ThingTypeFlags1.LAST_FLAG); // Close flags
 			return true;
 		}
 		
+		/**
+		 * Write versions 8.60 - 9.86
+		 */
 		static private function writeProperties2(bytes:ByteArray, thing:ThingType) : Boolean
 		{
 			if (thing.isGround)
 			{
-				bytes.writeByte(ThingTypeFlags2.GROUND);
+				bytes.writeByte(ThingTypeFlags2.GROUND); 
 				bytes.writeShort(thing.groundSpeed);
 			}
 			else if (thing.isGroundBorder)
@@ -471,16 +489,18 @@ package nail.otlib.utils
 			if (thing.stackable) { bytes.writeByte(ThingTypeFlags2.STACKABLE); }
 			if (thing.forceUse) { bytes.writeByte(ThingTypeFlags2.FORCE_USE); }
 			if (thing.multiUse) { bytes.writeByte(ThingTypeFlags2.MULTI_USE); }
+			
 			if (thing.writable)
 			{
 				bytes.writeByte(ThingTypeFlags2.WRITABLE);
 				bytes.writeShort(thing.maxTextLength);
 			}
+			
 			if (thing.writableOnce)
 			{
 				bytes.writeByte(ThingTypeFlags2.WRITABLE_ONCE);
 				bytes.writeShort(thing.maxTextLength);
-			}
+			}	
 			
 			if (thing.isFluidContainer) { bytes.writeByte(ThingTypeFlags2.FLUID_CONTAINER); }
 			if (thing.isFluid) { bytes.writeByte(ThingTypeFlags2.FLUID); }
@@ -488,7 +508,6 @@ package nail.otlib.utils
 			if (thing.isUnmoveable) { bytes.writeByte(ThingTypeFlags2.UNMOVEABLE); }
 			if (thing.blockMissile) { bytes.writeByte(ThingTypeFlags2.BLOCK_MISSILE); }
 			if (thing.blockPathfind) { bytes.writeByte(ThingTypeFlags2.BLOCK_PATHFIND); }
-			if (thing.noMoveAnimation) {  bytes.writeByte(ThingTypeFlags2.NO_MOVE_ANIMATION); }
 			if (thing.pickupable) { bytes.writeByte(ThingTypeFlags2.PICKUPABLE); }
 			if (thing.hangable) { bytes.writeByte(ThingTypeFlags2.HANGABLE); }
 			if (thing.isVertical) { bytes.writeByte(ThingTypeFlags2.VERTICAL); }
@@ -519,7 +538,6 @@ package nail.otlib.utils
 			}
 			
 			if (thing.isLyingObject) { bytes.writeByte(ThingTypeFlags2.LYING_OBJECT); }
-			
 			if (thing.animateAlways) { bytes.writeByte(ThingTypeFlags2.ANIMATE_ALWAYS); }
 			
 			if (thing.miniMap)
@@ -527,7 +545,7 @@ package nail.otlib.utils
 				bytes.writeByte(ThingTypeFlags2.MINI_MAP);
 				bytes.writeShort(thing.miniMapColor);
 			}
-			if (thing.lensHelp)
+			if (thing.isLensHelp)
 			{
 				bytes.writeByte(ThingTypeFlags2.LENS_HELP);
 				bytes.writeShort(thing.lensHelp);
@@ -552,18 +570,132 @@ package nail.otlib.utils
 				bytes.writeShort(thing.marketRestrictLevel);
 			}
 			
+			bytes.writeByte(ThingTypeFlags2.LAST_FLAG); // Close flags
+			return true;
+		}
+		
+		/**
+		 * Write versions 10.10+
+		 */
+		static private function writeProperties3(bytes:ByteArray, thing:ThingType) : Boolean
+		{
+			if (thing.isGround)
+			{
+				bytes.writeByte(ThingTypeFlags3.GROUND);
+				bytes.writeShort(thing.groundSpeed);
+			}
+			else if (thing.isGroundBorder)
+			{ 
+				bytes.writeByte(ThingTypeFlags3.GROUND_BORDER);
+			}
+			else if (thing.isOnBottom)
+			{
+				bytes.writeByte(ThingTypeFlags3.ON_BOTTOM);
+			}
+			else if (thing.isOnTop)
+			{
+				bytes.writeByte(ThingTypeFlags3.ON_TOP);
+			}
+			
+			if (thing.isContainer) { bytes.writeByte(ThingTypeFlags3.CONTAINER); }
+			if (thing.stackable) { bytes.writeByte(ThingTypeFlags3.STACKABLE); }
+			if (thing.forceUse) { bytes.writeByte(ThingTypeFlags3.FORCE_USE); }
+			if (thing.multiUse) { bytes.writeByte(ThingTypeFlags3.MULTI_USE); }
+			
+			if (thing.writable)
+			{
+				bytes.writeByte(ThingTypeFlags3.WRITABLE);
+				bytes.writeShort(thing.maxTextLength);
+			}
+			
+			if (thing.writableOnce)
+			{
+				bytes.writeByte(ThingTypeFlags3.WRITABLE_ONCE);
+				bytes.writeShort(thing.maxTextLength);
+			}
+			
+			if (thing.isFluidContainer) { bytes.writeByte(ThingTypeFlags3.FLUID_CONTAINER); }
+			if (thing.isFluid) { bytes.writeByte(ThingTypeFlags3.FLUID); }
+			if (thing.isUnpassable) { bytes.writeByte(ThingTypeFlags3.UNPASSABLE); }
+			if (thing.isUnmoveable) { bytes.writeByte(ThingTypeFlags3.UNMOVEABLE); }
+			if (thing.blockMissile) { bytes.writeByte(ThingTypeFlags3.BLOCK_MISSILE); }
+			if (thing.blockPathfind) { bytes.writeByte(ThingTypeFlags3.BLOCK_PATHFIND); }
+			if (thing.noMoveAnimation) {  bytes.writeByte(ThingTypeFlags3.NO_MOVE_ANIMATION); }
+			if (thing.pickupable) { bytes.writeByte(ThingTypeFlags3.PICKUPABLE); }
+			if (thing.hangable) { bytes.writeByte(ThingTypeFlags3.HANGABLE); }
+			if (thing.isVertical) { bytes.writeByte(ThingTypeFlags3.VERTICAL); }
+			if (thing.isHorizontal) { bytes.writeByte(ThingTypeFlags3.HORIZONTAL); }
+			if (thing.rotatable) { bytes.writeByte(ThingTypeFlags3.ROTATABLE); }
+			
+			if (thing.hasLight)
+			{
+				bytes.writeByte(ThingTypeFlags3.HAS_LIGHT);
+				bytes.writeShort(thing.lightLevel);
+				bytes.writeShort(thing.lightColor);
+			}
+			
+			if (thing.dontHide) { bytes.writeByte(ThingTypeFlags3.DONT_HIDE); }
+			if (thing.isTranslucent) { bytes.writeByte(ThingTypeFlags3.TRANSLUCENT); }
+			
+			if (thing.hasOffset)
+			{
+				bytes.writeByte(ThingTypeFlags3.HAS_OFFSET);
+				bytes.writeShort(thing.offsetX);
+				bytes.writeShort(thing.offsetY);
+			}
+			
+			if (thing.hasElevation)
+			{
+				bytes.writeByte(ThingTypeFlags3.HAS_ELEVATION);
+				bytes.writeShort(thing.elevation);
+			}
+			
+			if (thing.isLyingObject) { bytes.writeByte(ThingTypeFlags3.LYING_OBJECT); }
+			
+			if (thing.animateAlways) { bytes.writeByte(ThingTypeFlags3.ANIMATE_ALWAYS); }
+			
+			if (thing.miniMap)
+			{
+				bytes.writeByte(ThingTypeFlags3.MINI_MAP);
+				bytes.writeShort(thing.miniMapColor);
+			}
+			if (thing.isLensHelp)
+			{
+				bytes.writeByte(ThingTypeFlags3.LENS_HELP);
+				bytes.writeShort(thing.lensHelp);
+			}
+			if (thing.isFullGround) { bytes.writeByte(ThingTypeFlags3.FULL_GROUND); }
+			if (thing.ignoreLook) { bytes.writeByte(ThingTypeFlags3.IGNORE_LOOK); }
+			if (thing.cloth)
+			{
+				bytes.writeByte(ThingTypeFlags3.CLOTH);
+				bytes.writeShort(thing.clothSlot);
+			}
+			
+			if (thing.isMarketItem)
+			{
+				bytes.writeByte(ThingTypeFlags3.MARKET_ITEM);
+				bytes.writeShort(thing.marketCategory);
+				bytes.writeShort(thing.marketTradeAs);
+				bytes.writeShort(thing.marketShowAs);
+				bytes.writeShort(thing.marketName.length);
+				bytes.writeMultiByte(thing.marketName, ThingTypeStorage.STRING_CHARSET);
+				bytes.writeShort(thing.marketRestrictProfession);
+				bytes.writeShort(thing.marketRestrictLevel);
+			}
+			
 			if (thing.hasDefaultAction)
 			{
-				bytes.writeByte(ThingTypeFlags2.DEFAULT_ACTION);
+				bytes.writeByte(ThingTypeFlags3.DEFAULT_ACTION);
 				bytes.writeShort(thing.defaultAction); 
 			}
 			
 			if (thing.usable)
 			{
-				bytes.writeByte(ThingTypeFlags2.USABLE);
+				bytes.writeByte(ThingTypeFlags3.USABLE);
 			}
 			
-			bytes.writeByte(ThingTypeFlags2.LAST_FLAG); // Close flags
+			bytes.writeByte(ThingTypeFlags3.LAST_FLAG); // Close flags
 			return true;
 		}
 		
@@ -613,7 +745,10 @@ package nail.otlib.utils
 			return true;
 		}
 		
-		static private function readThingType(thing:ThingType, bytes:ByteArray) : Boolean
+		/**
+		 * Read versions 8.0 - 8.54
+		 */
+		static private function readThingType1(thing:ThingType, bytes:ByteArray) : Boolean
 		{
 			var flag : uint;
 			var index : uint; 
@@ -621,170 +756,158 @@ package nail.otlib.utils
 			var totalSprites : uint;
 			var previusFlag : uint; 
 			
-			while (flag < ThingTypeFlags.LAST_FLAG)
+			while (flag < ThingTypeFlags1.LAST_FLAG)
 			{
 				previusFlag = flag;
 				flag = bytes.readUnsignedByte();
 				
-				if (flag == ThingTypeFlags.LAST_FLAG)
+				if (flag == ThingTypeFlags1.LAST_FLAG)
 				{
 					return true;
 				}
 				
 				switch (flag)
 				{
-					case ThingTypeFlags.GROUND:
+					case ThingTypeFlags1.GROUND:
 						thing.isGround = true;
 						thing.groundSpeed = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.GROUND_BORDER:
+					case ThingTypeFlags1.GROUND_BORDER:
 						thing.isGroundBorder = true;
 						break;
 					
-					case ThingTypeFlags.ON_BOTTOM:
+					case ThingTypeFlags1.ON_BOTTOM:
 						thing.isOnBottom = true;
 						break;
 					
-					case ThingTypeFlags.ON_TOP:
+					case ThingTypeFlags1.ON_TOP:
 						thing.isOnTop = true;
 						break;
 					
-					case ThingTypeFlags.CONTAINER:
+					case ThingTypeFlags1.CONTAINER:
 						thing.isContainer = true;
 						break;
 					
-					case ThingTypeFlags.STACKABLE:
+					case ThingTypeFlags1.STACKABLE:
 						thing.stackable = true;
 						break;
 					
-					case ThingTypeFlags.FORCE_USE:
+					case ThingTypeFlags1.FORCE_USE:
 						thing.forceUse = true;
 						break;
 					
-					case ThingTypeFlags.MULTI_USE:
+					case ThingTypeFlags1.MULTI_USE:
 						thing.multiUse = true;
 						break;
 					
-					case ThingTypeFlags.WRITABLE:
+					case ThingTypeFlags1.HAS_CHARGES:
+						thing.hasCharges = true;
+						break;
+					
+					case ThingTypeFlags1.WRITABLE:
 						thing.writable = true;
 						thing.maxTextLength = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.WRITABLE_ONCE:
+					case ThingTypeFlags1.WRITABLE_ONCE:
 						thing.writableOnce = true;
 						thing.maxTextLength = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.FLUID_CONTAINER:
+					case ThingTypeFlags1.FLUID_CONTAINER:
 						thing.isFluidContainer = true;
 						break;
 					
-					case ThingTypeFlags.FLUID:
+					case ThingTypeFlags1.FLUID:
 						thing.isFluid = true;
 						break;
 					
-					case ThingTypeFlags.UNPASSABLE:
+					case ThingTypeFlags1.UNPASSABLE:
 						thing.isUnpassable = true;
 						break;
 					
-					case ThingTypeFlags.UNMOVEABLE:
+					case ThingTypeFlags1.UNMOVEABLE:
 						thing.isUnmoveable = true;
 						break;
 					
-					case ThingTypeFlags.BLOCK_MISSILE:
+					case ThingTypeFlags1.BLOCK_MISSILE:
 						thing.blockMissile = true;
 						break;
 					
-					case ThingTypeFlags.BLOCK_PATHFIND:
+					case ThingTypeFlags1.BLOCK_PATHFIND:
 						thing.blockPathfind = true;
 						break;
 					
-					case ThingTypeFlags.PICKUPABLE:
+					case ThingTypeFlags1.PICKUPABLE:
 						thing.pickupable = true;
 						break;
 					
-					case ThingTypeFlags.HANGABLE:
+					case ThingTypeFlags1.HANGABLE:
 						thing.hangable = true;
 						break;
 					
-					case ThingTypeFlags.VERTICAL:
+					case ThingTypeFlags1.VERTICAL:
 						thing.isVertical = true;
 						break;
 					
-					case ThingTypeFlags.HORIZONTAL:
+					case ThingTypeFlags1.HORIZONTAL:
 						thing.isHorizontal = true;
 						break;
 					
-					case ThingTypeFlags.ROTATABLE:
+					case ThingTypeFlags1.ROTATABLE:
 						thing.rotatable = true;
 						break;
 					
-					case ThingTypeFlags.HAS_LIGHT:
+					case ThingTypeFlags1.HAS_LIGHT:
 						thing.hasLight = true;
 						thing.lightLevel = bytes.readUnsignedShort();
 						thing.lightColor = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.DONT_HIDE:
+					case ThingTypeFlags1.DONT_HIDE:
 						thing.dontHide = true;
 						break;
 					
-					case ThingTypeFlags.TRANSLUCENT:
-						thing.isTranslucent = true;
+					case ThingTypeFlags1.FLOOR_CHANGE:
+						thing.floorChange = true;
 						break;
 					
-					case ThingTypeFlags.HAS_OFFSET:
+					case ThingTypeFlags1.HAS_OFFSET:
 						thing.hasOffset = true;
 						thing.offsetX = bytes.readUnsignedShort();
 						thing.offsetY = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.HAS_ELEVATION:
+					case ThingTypeFlags1.HAS_ELEVATION:
 						thing.hasElevation = true;
 						thing.elevation = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.LYING_OBJECT:
+					case ThingTypeFlags1.LYING_OBJECT:
 						thing.isLyingObject = true;
 						break;
 					
-					case ThingTypeFlags.ANIMATE_ALWAYS:
+					case ThingTypeFlags1.ANIMATE_ALWAYS:
 						thing.animateAlways = true;
 						break;
 					
-					case ThingTypeFlags.MINI_MAP:
+					case ThingTypeFlags1.MINI_MAP:
 						thing.miniMap = true;
 						thing.miniMapColor = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.LENS_HELP:
+					case ThingTypeFlags1.LENS_HELP:
 						thing.isLensHelp = true;
-						thing.lensHelp   = bytes.readUnsignedShort();
+						thing.lensHelp = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags.FULL_GROUND:
+					case ThingTypeFlags1.FULL_GROUND:
 						thing.isFullGround = true;
 						break;
 					
-					case ThingTypeFlags.IGNORE_LOOK:
+					case ThingTypeFlags1.IGNORE_LOOK:
 						thing.ignoreLook = true;
-						break;
-					
-					case ThingTypeFlags.CLOTH:
-						thing.cloth = true;
-						thing.clothSlot = bytes.readUnsignedShort();
-						break;
-					
-					case ThingTypeFlags.MARKET_ITEM:
-						thing.isMarketItem = true;
-						thing.marketCategory = bytes.readUnsignedShort();
-						thing.marketTradeAs = bytes.readUnsignedShort();
-						thing.marketShowAs = bytes.readUnsignedShort();
-						nameLength = bytes.readUnsignedShort();
-						thing.marketName = bytes.readMultiByte(nameLength, ThingTypeStorage.STRING_CHARSET);
-						thing.marketRestrictProfession = bytes.readUnsignedShort();
-						thing.marketRestrictLevel = bytes.readUnsignedShort();
 						break;
 					
 					default:
@@ -793,9 +916,13 @@ package nail.otlib.utils
 						break;
 				}
 			}
+			
 			return true;
 		}
 		
+		/**
+		 * Read versions 8.60 - 9.86
+		 */
 		static private function readThingType2(thing:ThingType, bytes:ByteArray) : Boolean
 		{
 			var flag : uint;
@@ -883,10 +1010,6 @@ package nail.otlib.utils
 						thing.blockPathfind = true;
 						break;
 					
-					case ThingTypeFlags2.NO_MOVE_ANIMATION:
-						thing.noMoveAnimation = true;
-						break;
-					
 					case ThingTypeFlags2.PICKUPABLE:
 						thing.pickupable = true;
 						break;
@@ -908,7 +1031,7 @@ package nail.otlib.utils
 						break;
 					
 					case ThingTypeFlags2.HAS_LIGHT:
-						thing.hasLight   = true;
+						thing.hasLight = true;
 						thing.lightLevel = bytes.readUnsignedShort();
 						thing.lightColor = bytes.readUnsignedShort();
 						break;
@@ -974,12 +1097,202 @@ package nail.otlib.utils
 						thing.marketRestrictLevel = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags2.DEFAULT_ACTION:
+					default:
+						throw new Error(StringUtil.substitute("Unknown flag. flag=0x{0}, previous=0x{1}, category={2}, id={3}",
+							flag.toString(16), previusFlag.toString(16), thing.category, thing.id));
+						break;
+				}
+			}
+			return true;
+		}
+		
+		/**
+		 * Read versions 10.10+
+		 */
+		static private function readThingType3(thing:ThingType, bytes:ByteArray) : Boolean
+		{
+			var flag : uint;
+			var index : uint; 
+			var nameLength : uint;
+			var totalSprites : uint;
+			var previusFlag : uint; 
+			
+			while (flag < ThingTypeFlags3.LAST_FLAG)
+			{
+				previusFlag = flag;
+				flag = bytes.readUnsignedByte();
+				
+				if (flag == ThingTypeFlags3.LAST_FLAG)
+				{
+					return true;
+				}
+				
+				switch (flag)
+				{
+					case ThingTypeFlags3.GROUND:
+						thing.isGround = true;
+						thing.groundSpeed = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.GROUND_BORDER:
+						thing.isGroundBorder = true;
+						break;
+					
+					case ThingTypeFlags3.ON_BOTTOM:
+						thing.isOnBottom = true;
+						break;
+					
+					case ThingTypeFlags3.ON_TOP:
+						thing.isOnTop = true;
+						break;
+					
+					case ThingTypeFlags3.CONTAINER:
+						thing.isContainer = true;
+						break;
+					
+					case ThingTypeFlags3.STACKABLE:
+						thing.stackable = true;
+						break;
+					
+					case ThingTypeFlags3.FORCE_USE:
+						thing.forceUse = true;
+						break;
+					
+					case ThingTypeFlags3.MULTI_USE:
+						thing.multiUse = true;
+						break;
+					
+					case ThingTypeFlags3.WRITABLE:
+						thing.writable = true;
+						thing.maxTextLength = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.WRITABLE_ONCE:
+						thing.writableOnce = true;
+						thing.maxTextLength = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.FLUID_CONTAINER:
+						thing.isFluidContainer = true;
+						break;
+					
+					case ThingTypeFlags3.FLUID:
+						thing.isFluid = true;
+						break;
+					
+					case ThingTypeFlags3.UNPASSABLE:
+						thing.isUnpassable = true;
+						break;
+					
+					case ThingTypeFlags3.UNMOVEABLE:
+						thing.isUnmoveable = true;
+						break;
+					
+					case ThingTypeFlags3.BLOCK_MISSILE:
+						thing.blockMissile = true;
+						break;
+					
+					case ThingTypeFlags3.BLOCK_PATHFIND:
+						thing.blockPathfind = true;
+						break;
+					
+					case ThingTypeFlags3.NO_MOVE_ANIMATION:
+						thing.noMoveAnimation = true;
+						break;
+					
+					case ThingTypeFlags3.PICKUPABLE:
+						thing.pickupable = true;
+						break;
+					
+					case ThingTypeFlags3.HANGABLE:
+						thing.hangable = true;
+						break;
+					
+					case ThingTypeFlags3.VERTICAL:
+						thing.isVertical = true;
+						break;
+					
+					case ThingTypeFlags3.HORIZONTAL:
+						thing.isHorizontal = true;
+						break;
+					
+					case ThingTypeFlags3.ROTATABLE:
+						thing.rotatable = true;
+						break;
+					
+					case ThingTypeFlags3.HAS_LIGHT:
+						thing.hasLight = true;
+						thing.lightLevel = bytes.readUnsignedShort();
+						thing.lightColor = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.DONT_HIDE:
+						thing.dontHide = true;
+						break;
+					
+					case ThingTypeFlags3.TRANSLUCENT:
+						thing.isTranslucent = true;
+						break;
+					
+					case ThingTypeFlags3.HAS_OFFSET:
+						thing.hasOffset = true;
+						thing.offsetX = bytes.readUnsignedShort();
+						thing.offsetY = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.HAS_ELEVATION:
+						thing.hasElevation = true;
+						thing.elevation = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.LYING_OBJECT:
+						thing.isLyingObject = true;
+						break;
+					
+					case ThingTypeFlags3.ANIMATE_ALWAYS:
+						thing.animateAlways = true;
+						break;
+					
+					case ThingTypeFlags3.MINI_MAP:
+						thing.miniMap = true;
+						thing.miniMapColor = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.LENS_HELP:
+						thing.isLensHelp = true;
+						thing.lensHelp = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.FULL_GROUND:
+						thing.isFullGround = true;
+						break;
+					
+					case ThingTypeFlags3.IGNORE_LOOK:
+						thing.ignoreLook = true;
+						break;
+					
+					case ThingTypeFlags3.CLOTH:
+						thing.cloth = true;
+						thing.clothSlot = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.MARKET_ITEM:
+						thing.isMarketItem = true;
+						thing.marketCategory = bytes.readUnsignedShort();
+						thing.marketTradeAs = bytes.readUnsignedShort();
+						thing.marketShowAs = bytes.readUnsignedShort();
+						nameLength = bytes.readUnsignedShort();
+						thing.marketName = bytes.readMultiByte(nameLength, ThingTypeStorage.STRING_CHARSET);
+						thing.marketRestrictProfession = bytes.readUnsignedShort();
+						thing.marketRestrictLevel = bytes.readUnsignedShort();
+						break;
+					
+					case ThingTypeFlags3.DEFAULT_ACTION:
 						thing.hasDefaultAction = true;
 						thing.defaultAction = bytes.readUnsignedShort();
 						break;
 					
-					case ThingTypeFlags2.USABLE:
+					case ThingTypeFlags3.USABLE:
 						thing.usable = true;
 						break;
 					

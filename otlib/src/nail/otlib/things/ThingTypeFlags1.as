@@ -26,7 +26,10 @@ package nail.otlib.things
 {
 	import nail.errors.AbstractClassError;
 
-	public final class ThingTypeFlags
+	/**
+	 * The ThingTypeFlags1 class defines the valid constant values for the client versions 8.0 - 8.54
+	 */
+	public final class ThingTypeFlags1
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -34,9 +37,9 @@ package nail.otlib.things
 		//
 		//--------------------------------------------------------------------------
 		
-		public function ThingTypeFlags()
+		public function ThingTypeFlags1()
 		{
-			throw new AbstractClassError(ThingTypeFlags);
+			throw new AbstractClassError(ThingTypeFlags1);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -61,57 +64,55 @@ package nail.otlib.things
 		
 		static public const MULTI_USE : uint = 0x07;
 		
-		static public const WRITABLE : uint = 0x08;
+		static public const HAS_CHARGES : uint = 0x08; //<-----
 		
-		static public const WRITABLE_ONCE : uint = 0x09;
+		static public const WRITABLE : uint = 0x09;
 		
-		static public const FLUID_CONTAINER : uint = 0x0A;
+		static public const WRITABLE_ONCE : uint = 0x0A;
 		
-		static public const FLUID : uint = 0x0B;
+		static public const FLUID_CONTAINER : uint = 0x0B;
 		
-		static public const UNPASSABLE : uint = 0x0C;
+		static public const FLUID : uint = 0x0C;
 		
-		static public const UNMOVEABLE : uint = 0x0D;
+		static public const UNPASSABLE : uint = 0x0D;
 		
-		static public const BLOCK_MISSILE : uint = 0x0E;
+		static public const UNMOVEABLE : uint = 0x0E;
 		
-		static public const BLOCK_PATHFIND : uint  = 0x0F;
+		static public const BLOCK_MISSILE : uint = 0x0F;
 		
-		static public const PICKUPABLE : uint = 0x10;
+		static public const BLOCK_PATHFIND : uint  = 0x10;
 		
-		static public const HANGABLE : uint = 0x11;
+		static public const PICKUPABLE : uint = 0x11;
 		
-		static public const VERTICAL : uint = 0x12;
+		static public const HANGABLE : uint = 0x12;
 		
-		static public const HORIZONTAL : uint = 0x13;
+		static public const VERTICAL : uint = 0x13;
 		
-		static public const ROTATABLE : uint = 0x14;
+		static public const HORIZONTAL : uint = 0x14;
 		
-		static public const HAS_LIGHT : uint = 0x15;
+		static public const ROTATABLE : uint = 0x15;
 		
-		static public const DONT_HIDE : uint = 0x16;
+		static public const HAS_LIGHT : uint = 0x16;
 		
-		static public const TRANSLUCENT : uint = 0x17;
+		static public const DONT_HIDE : uint = 0x17;
 		
-		static public const HAS_OFFSET : uint = 0x18;
+		static public const FLOOR_CHANGE : uint = 0x18;
 		
-		static public const HAS_ELEVATION : uint = 0x19;
+		static public const HAS_OFFSET : uint = 0x19;
 		
-		static public const LYING_OBJECT : uint = 0x1A;
+		static public const HAS_ELEVATION : uint = 0x1A;
 		
-		static public const ANIMATE_ALWAYS : uint = 0x1B;
+		static public const LYING_OBJECT : uint = 0x1B;
 		
-		static public const MINI_MAP : uint = 0x1C;
+		static public const ANIMATE_ALWAYS : uint = 0x1C;
 		
-		static public const LENS_HELP : uint = 0x1D;
+		static public const MINI_MAP : uint = 0x1D;
 		
-		static public const FULL_GROUND : uint = 0x1E;
+		static public const LENS_HELP : uint = 0x1E;
 		
-		static public const IGNORE_LOOK : uint = 0x1F;  
+		static public const FULL_GROUND : uint = 0x1F;
 		
-		static public const CLOTH : uint = 0x20;
-		
-		static public const MARKET_ITEM : uint = 0x21;
+		static public const IGNORE_LOOK : uint = 0x20;
 		
 		static public const LAST_FLAG : uint = 0xFF;
 	}

@@ -72,8 +72,6 @@ package nail.otlib.things
 		[Bindable]
 		public var frames : uint;
 		
-		public var spriteIndex : Vector.<uint>;
-		
 		[Bindable]
 		public var isGround : Boolean;
 		
@@ -100,6 +98,9 @@ package nail.otlib.things
 		
 		[Bindable]
 		public var multiUse : Boolean;
+		
+		[Bindable]
+		public var hasCharges : Boolean;
 		
 		[Bindable]
 		public var writable : Boolean;
@@ -160,6 +161,9 @@ package nail.otlib.things
 		
 		[Bindable]
 		public var isTranslucent : Boolean;
+		
+		[Bindable]
+		public var floorChange : Boolean;
 		
 		[Bindable]
 		public var hasLight : Boolean;
@@ -235,6 +239,8 @@ package nail.otlib.things
 		
 		[Bindable]
 		public var usable : Boolean;
+		
+		public var spriteIndex : Vector.<uint>;
 		
 		public var sprites : Vector.<SpriteData>;
 		

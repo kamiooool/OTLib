@@ -27,9 +27,9 @@ package nail.otlib.things
 	import nail.errors.AbstractClassError;
 
 	/**
-	 * The ThingTypeFlags2 class defines the valid constant values for the client versions 8.6 - 9.86
+	 * The ThingTypeFlags3 class defines the valid constant values for the client versions 10.10+
 	 */
-	public final class ThingTypeFlags2
+	public final class ThingTypeFlags3
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -37,9 +37,9 @@ package nail.otlib.things
 		//
 		//--------------------------------------------------------------------------
 		
-		public function ThingTypeFlags2()
+		public function ThingTypeFlags3()
 		{
-			throw new AbstractClassError(ThingTypeFlags2);
+			throw new AbstractClassError(ThingTypeFlags3);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -80,41 +80,47 @@ package nail.otlib.things
 		
 		static public const BLOCK_PATHFIND : uint  = 0x0F;
 		
-		static public const PICKUPABLE : uint = 0x10;
+		static public const NO_MOVE_ANIMATION : uint = 0x10;
 		
-		static public const HANGABLE : uint = 0x11;
+		static public const PICKUPABLE : uint = 0x11;
 		
-		static public const VERTICAL : uint = 0x12;
+		static public const HANGABLE : uint = 0x12;
 		
-		static public const HORIZONTAL : uint = 0x13;
+		static public const VERTICAL : uint = 0x13;
 		
-		static public const ROTATABLE : uint = 0x14;
+		static public const HORIZONTAL : uint = 0x14;
 		
-		static public const HAS_LIGHT : uint = 0x15;
+		static public const ROTATABLE : uint = 0x15;
 		
-		static public const DONT_HIDE : uint = 0x16;
+		static public const HAS_LIGHT : uint = 0x16;
 		
-		static public const TRANSLUCENT : uint = 0x17;
+		static public const DONT_HIDE : uint = 0x17;
 		
-		static public const HAS_OFFSET : uint = 0x18;
+		static public const TRANSLUCENT : uint = 0x18;
 		
-		static public const HAS_ELEVATION : uint = 0x19;
+		static public const HAS_OFFSET : uint = 0x19;
 		
-		static public const LYING_OBJECT : uint = 0x1A;
+		static public const HAS_ELEVATION : uint = 0x1A;
 		
-		static public const ANIMATE_ALWAYS : uint = 0x1B;
+		static public const LYING_OBJECT : uint = 0x1B;
 		
-		static public const MINI_MAP : uint = 0x1C;
+		static public const ANIMATE_ALWAYS : uint = 0x1C;
 		
-		static public const LENS_HELP : uint = 0x1D;
+		static public const MINI_MAP : uint = 0x1D;
 		
-		static public const FULL_GROUND : uint = 0x1E;
+		static public const LENS_HELP : uint = 0x1E;
 		
-		static public const IGNORE_LOOK : uint = 0x1F;  
+		static public const FULL_GROUND : uint = 0x1F;
 		
-		static public const CLOTH : uint = 0x20;
+		static public const IGNORE_LOOK : uint = 0x20;  
 		
-		static public const MARKET_ITEM : uint = 0x21;
+		static public const CLOTH : uint = 0x21;
+		
+		static public const MARKET_ITEM : uint = 0x22;
+		
+		static public const DEFAULT_ACTION : uint = 0x23;
+		
+		static public const USABLE : uint = 0xFE;
 		
 		static public const LAST_FLAG : uint = 0xFF;
 	}

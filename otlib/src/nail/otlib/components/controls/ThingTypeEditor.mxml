@@ -1376,6 +1376,14 @@
 								label="Usable"
 								selected="{_thingBinding.usable}"
 								change="{_thingBinding.usable = usableCheckBox.selected}"/>
+					<s:CheckBox id="chargesCheckBox"
+								label="Has Charges"
+								selected="{_thingBinding.hasCharges}"
+								change="{_thingBinding.hasCharges = chargesCheckBox.selected}"/>
+					<s:CheckBox id="floorChangeCheckBox"
+								label="Floor Change"
+								selected="{_thingBinding.floorChange}"
+								change="{_thingBinding.floorChange = floorChangeCheckBox.selected}"/>
 				</s:VGroup>
 			</nail:GroupBox>
 		</s:Group>

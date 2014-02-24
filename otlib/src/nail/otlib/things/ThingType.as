@@ -73,6 +73,8 @@ package nail.otlib.things
 		
 		public var multiUse : Boolean;
 		
+		public var hasCharges : Boolean;
+		
 		public var writable : Boolean;
 		
 		public var writableOnce : Boolean;
@@ -112,6 +114,8 @@ package nail.otlib.things
 		public var dontHide : Boolean;
 		
 		public var isTranslucent : Boolean;
+		
+		public var floorChange : Boolean;
 		
 		public var hasOffset : Boolean;
 		
