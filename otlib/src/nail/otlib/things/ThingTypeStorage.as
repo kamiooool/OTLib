@@ -808,7 +808,7 @@ package nail.otlib.things
 						break;
 					
 					default:
-						throw new Error(StringUtil.substitute("Unknown flag. flag=0x{0}, previus=0x{1}, category={2}, id={3}",
+						throw new Error(StringUtil.substitute("Unknown flag. flag=0x{0}, previous=0x{1}, category={2}, id={3}",
 							flag.toString(16), previusFlag.toString(16), thing.category, thing.id));
 						break;
 				}
@@ -1005,7 +1005,7 @@ package nail.otlib.things
 						break;
 					
 					default:
-						throw new Error(StringUtil.substitute("Unknown flag. flag=0x{0}, previus=0x{1}, category={2}, id={3}",
+						throw new Error(StringUtil.substitute("Unknown flag. flag=0x{0}, previous=0x{1}, category={2}, id={3}",
 							flag.toString(16), previusFlag.toString(16), thing.category, thing.id));
 						break;
 				}
