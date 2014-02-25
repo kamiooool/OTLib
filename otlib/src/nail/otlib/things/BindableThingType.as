@@ -30,10 +30,14 @@ package nail.otlib.things
 	import flash.utils.describeType;
 	
 	import mx.events.PropertyChangeEvent;
+	import mx.resources.IResourceManager;
+	import mx.resources.ResourceManager;
 	
 	import nail.otlib.utils.SpriteData;
 	import nail.otlib.utils.ThingData;
 
+	[ResourceBundle("otlibControls")]
+	
 	public class BindableThingType extends EventDispatcher
 	{
 		//--------------------------------------------------------------------------
@@ -397,71 +401,77 @@ package nail.otlib.things
 		
 		static private const PROPERTY_LABEL : Dictionary = new Dictionary();
 		
-		PROPERTY_LABEL["id"] = "Id";
-		PROPERTY_LABEL["category"] = "Category";
-		PROPERTY_LABEL["width"] = "Width";
-		PROPERTY_LABEL["height"] = "Height";
-		PROPERTY_LABEL["exactSize"] = "Crop Size";
-		PROPERTY_LABEL["layers"] = "Layers";
-		PROPERTY_LABEL["patternX"] = "Pattern X";
-		PROPERTY_LABEL["patternY"] = "Pattern Y";
-		PROPERTY_LABEL["patternZ"] = "Pattern Z";
-		PROPERTY_LABEL["frames"] = "Frames";
-		PROPERTY_LABEL["isGround"] = "Ground";
-		PROPERTY_LABEL["groundSpeed"] = "Ground Speed";
-		PROPERTY_LABEL["isGroundBorder"] = "Clip";
-		PROPERTY_LABEL["isOnBottom"] = "Bottom";
-		PROPERTY_LABEL["isOnTop"] = "Top";
-		PROPERTY_LABEL["isContainer"] = "Container";
-		PROPERTY_LABEL["stackable"] = "Stackable";
-		PROPERTY_LABEL["forceUse"] = "Force Use";
-		PROPERTY_LABEL["multiUse"] = "Multi Use";
-		PROPERTY_LABEL["writable"] = "Writable";
-		PROPERTY_LABEL["writableOnce"] = "Writable Once";
-		PROPERTY_LABEL["maxTextLength"] = "Max Length";
-		PROPERTY_LABEL["isFluidContainer"] = "Fluid Container";
-		PROPERTY_LABEL["isFluid"] = "Fluid";
-		PROPERTY_LABEL["isUnpassable"] = "Unpassable";
-		PROPERTY_LABEL["isUnmoveable"] = "Unmoveable";
-		PROPERTY_LABEL["blockMissile"] = "Block Missile";
-		PROPERTY_LABEL["blockPathfind"] = "Block Pathfind";
-		PROPERTY_LABEL["noMoveAnimation"] = "No Move Animation";
-		PROPERTY_LABEL["pickupable"] = "Pickupable";
-		PROPERTY_LABEL["hangable"] = "Hangable";
-		PROPERTY_LABEL["isVertical"] = "Vertical";
-		PROPERTY_LABEL["isHorizontal"] = "Horizontal";
-		PROPERTY_LABEL["rotatable"] = "Rotatable";
-		PROPERTY_LABEL["hasOffset"] = "Has Offset";
-		PROPERTY_LABEL["offsetX"] = "Offset X";
-		PROPERTY_LABEL["offsetY"] = "Offset Y";
-		PROPERTY_LABEL["dontHide"] = "Don't Hide";
-		PROPERTY_LABEL["isTranslucent"] = "Translucent";
-		PROPERTY_LABEL["hasLight"] = "Has Light";
-		PROPERTY_LABEL["lightLevel"] = "Light Level";
-		PROPERTY_LABEL["lightColor"] = "Light Color";
-		PROPERTY_LABEL["hasElevation"] = "Has Elevation";
-		PROPERTY_LABEL["elevation"] = "Elevation Height";
-		PROPERTY_LABEL["isLyingObject"] = "Lying Object";
-		PROPERTY_LABEL["animateAlways"] = "Animate Always";
-		PROPERTY_LABEL["miniMap"] = "Automap";
-		PROPERTY_LABEL["miniMapColor"] = "Automap Color";
-		PROPERTY_LABEL["isLensHelp"] = "Lens Help";
-		PROPERTY_LABEL["lensHelp"] = "Lens Help Value";
-		PROPERTY_LABEL["isFullGround"] = "Full Ground";
-		PROPERTY_LABEL["ignoreLook"] = "Ignore Look";
-		PROPERTY_LABEL["cloth"] = "Equip";
-		PROPERTY_LABEL["clothSlot"] = "Slot";
-		PROPERTY_LABEL["isMarketItem"] = "Market";
-		PROPERTY_LABEL["marketName"] = "Name";
-		PROPERTY_LABEL["marketCategory"] = "Market Category";
-		PROPERTY_LABEL["marketTradeAs"] = "Trade As";
-		PROPERTY_LABEL["marketShowAs"] = "Show As";
-		PROPERTY_LABEL["marketRestrictProfession"] = "Vocation";
-		PROPERTY_LABEL["marketRestrictLevel"] = "Level";
-		PROPERTY_LABEL["hasDefaultAction"] = "Action";
-		PROPERTY_LABEL["defaultAction"] = "Action Type";
-		PROPERTY_LABEL["usable"] = "Usable";
-		PROPERTY_LABEL["spriteIndex"] = "Sprite Id";
+		static private function startPropertyLabels() : void
+		{
+			var resource : IResourceManager = ResourceManager.getInstance();
+			
+			PROPERTY_LABEL["width"] = resource.getString("otlibControls", "thing.width");
+			PROPERTY_LABEL["height"] = resource.getString("otlibControls", "thing.height");
+			PROPERTY_LABEL["exactSize"] = resource.getString("otlibControls", "thing.crop-size");
+			PROPERTY_LABEL["layers"] = resource.getString("otlibControls", "thing.layers");
+			PROPERTY_LABEL["patternX"] = resource.getString("otlibControls", "thing.pattern-x");
+			PROPERTY_LABEL["patternY"] = resource.getString("otlibControls", "thing.pattern-y");
+			PROPERTY_LABEL["patternZ"] = resource.getString("otlibControls", "thing.pattern-z");
+			PROPERTY_LABEL["frames"] = resource.getString("otlibControls", "thing.frames");
+			PROPERTY_LABEL["isGround"] = resource.getString("otlibControls", "thing.is-ground");
+			PROPERTY_LABEL["groundSpeed"] = resource.getString("otlibControls", "thing.ground-speed");
+			PROPERTY_LABEL["isGroundBorder"] = resource.getString("otlibControls", "thing.is-on-clip");
+			PROPERTY_LABEL["isOnBottom"] = resource.getString("otlibControls", "thing.is-on-bottom");
+			PROPERTY_LABEL["isOnTop"] = resource.getString("otlibControls", "thing.is-on-top");
+			PROPERTY_LABEL["isContainer"] = resource.getString("otlibControls", "thing.container");
+			PROPERTY_LABEL["stackable"] = resource.getString("otlibControls", "thing.stackable");
+			PROPERTY_LABEL["forceUse"] = resource.getString("otlibControls", "thing.force-use");
+			PROPERTY_LABEL["multiUse"] = resource.getString("otlibControls", "thing.multi-use");
+			PROPERTY_LABEL["writable"] = resource.getString("otlibControls", "thing.writable");
+			PROPERTY_LABEL["writableOnce"] = resource.getString("otlibControls", "thing.writable-once");
+			PROPERTY_LABEL["maxTextLength"] = resource.getString("otlibControls", "thing.max-length");
+			PROPERTY_LABEL["isFluidContainer"] = resource.getString("otlibControls", "thing.fluid-container");
+			PROPERTY_LABEL["isFluid"] = resource.getString("otlibControls", "thing.fluid");
+			PROPERTY_LABEL["isUnpassable"] = resource.getString("otlibControls", "thing.unpassable");
+			PROPERTY_LABEL["isUnmoveable"] = resource.getString("otlibControls", "thing.unmoveable");
+			PROPERTY_LABEL["blockMissile"] = resource.getString("otlibControls", "thing.block-missile");
+			PROPERTY_LABEL["blockPathfind"] = resource.getString("otlibControls", "thing.block-pathfinder");
+			PROPERTY_LABEL["noMoveAnimation"] = resource.getString("otlibControls", "thing.no-move-animation");
+			PROPERTY_LABEL["pickupable"] = resource.getString("otlibControls", "thing.pickupable");
+			PROPERTY_LABEL["hangable"] = resource.getString("otlibControls", "thing.hangable");
+			PROPERTY_LABEL["isVertical"] = resource.getString("otlibControls", "thing.vertical-wall");
+			PROPERTY_LABEL["isHorizontal"] = resource.getString("otlibControls", "thing.horizontal-wall");
+			PROPERTY_LABEL["rotatable"] = resource.getString("otlibControls", "thing.rotatable");
+			PROPERTY_LABEL["hasOffset"] = resource.getString("otlibControls", "thing.has-offset");
+			PROPERTY_LABEL["offsetX"] = resource.getString("otlibControls", "thing.offset-x");
+			PROPERTY_LABEL["offsetY"] = resource.getString("otlibControls", "thing.offset-y");
+			PROPERTY_LABEL["dontHide"] = resource.getString("otlibControls", "thing.dont-hide");
+			PROPERTY_LABEL["isTranslucent"] = resource.getString("otlibControls", "thing.translucent");
+			PROPERTY_LABEL["hasLight"] = resource.getString("otlibControls", "thing.has-light");
+			PROPERTY_LABEL["lightLevel"] = resource.getString("otlibControls", "thing.light-level");
+			PROPERTY_LABEL["lightColor"] = resource.getString("otlibControls", "thing.light-color");
+			PROPERTY_LABEL["hasElevation"] = resource.getString("otlibControls", "thing.has-elevation");
+			PROPERTY_LABEL["elevation"] = resource.getString("otlibControls", "thing.elevation-height");
+			PROPERTY_LABEL["isLyingObject"] = resource.getString("otlibControls", "thing.lying-object");
+			PROPERTY_LABEL["animateAlways"] = resource.getString("otlibControls", "thing.animate-always");
+			PROPERTY_LABEL["miniMap"] = resource.getString("otlibControls", "thing.automap");
+			PROPERTY_LABEL["miniMapColor"] = resource.getString("otlibControls", "thing.automap-color");
+			PROPERTY_LABEL["isLensHelp"] = resource.getString("otlibControls", "thing.lens-help");
+			PROPERTY_LABEL["lensHelp"] = resource.getString("otlibControls", "thing.lens-help-value");
+			PROPERTY_LABEL["isFullGround"] = resource.getString("otlibControls", "thing.full-ground");
+			PROPERTY_LABEL["ignoreLook"] = resource.getString("otlibControls", "thing.ignore-look");
+			PROPERTY_LABEL["cloth"] = resource.getString("otlibControls", "thing.cloth");
+			PROPERTY_LABEL["clothSlot"] = resource.getString("otlibControls", "thing.cloth-slot");
+			PROPERTY_LABEL["isMarketItem"] = resource.getString("otlibControls", "thing.market");
+			PROPERTY_LABEL["marketName"] = resource.getString("otlibControls", "thing.market-name");
+			PROPERTY_LABEL["marketCategory"] = resource.getString("otlibControls", "thing.market-category");
+			PROPERTY_LABEL["marketTradeAs"] = resource.getString("otlibControls", "thing.trade-as");
+			PROPERTY_LABEL["marketShowAs"] = resource.getString("otlibControls", "thing.show-as");
+			PROPERTY_LABEL["marketRestrictProfession"] = resource.getString("otlibControls", "thing.vocation");
+			PROPERTY_LABEL["marketRestrictLevel"] = resource.getString("otlibControls", "thing.level");
+			PROPERTY_LABEL["hasDefaultAction"] = resource.getString("otlibControls", "thing.has-action");
+			PROPERTY_LABEL["defaultAction"] = resource.getString("otlibControls", "thing.action-type");
+			PROPERTY_LABEL["usable"] = resource.getString("otlibControls", "thing.usable");
+			PROPERTY_LABEL["spriteIndex"] = resource.getString("otlibControls", "thing.sprite-id");
+			PROPERTY_LABEL["hasCharges"] = resource.getString("otlibControls", "thing.has-charges");
+			PROPERTY_LABEL["floorChange"] = resource.getString("otlibControls", "thing.floor-change");
+		}
+		startPropertyLabels();
 		
 		static public function toLabel(property:String) : String
 		{

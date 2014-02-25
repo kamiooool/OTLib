@@ -37,6 +37,7 @@
 		[Event(name="thingChange", type="nail.otlib.events.ThingEditorEvent")]
 		[Event(name="thingPropertyChange", type="nail.otlib.events.ThingEditorEvent")]
 		[Event(name="spriteDoubleClick", type="nail.otlib.events.ThingEditorEvent")]
+		[ResourceBundle("otlibControls")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -630,7 +631,7 @@
 				
 				<!-- appearance group -->
 				<nail:GroupBox id="appearanceGroupBox"
-							   label="Appearance"
+							   label="@Resource(key='tte.appearace', bundle='otlibControls')"
 							   width="100%"
 							   minHeight="470">
 					<nail:layout>
@@ -652,7 +653,7 @@
 											height="29"
 											top="5"
 											left="5"
-											toolTip="Northwest"
+											toolTip="@Resource(key='label.northwest', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_top_left.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -661,7 +662,7 @@
 											height="29"
 											top="5"
 											horizontalCenter="0"
-											toolTip="North"
+											toolTip="@Resource(key='label.north', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_up.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -670,7 +671,7 @@
 											height="29"
 											top="5"
 											right="5"
-											toolTip="Northeast"
+											toolTip="@Resource(key='label.northeast', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_top_right.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -679,7 +680,7 @@
 											height="29"
 											verticalCenter="0"
 											right="5"
-											toolTip="East"
+											toolTip="@Resource(key='label.east', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_right.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -688,7 +689,7 @@
 											height="29"
 											bottom="5"
 											right="5"
-											toolTip="Southeast"
+											toolTip="@Resource(key='label.southeast', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_bottom_right.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -697,7 +698,7 @@
 											height="29"
 											bottom="5"
 											horizontalCenter="0"
-											toolTip="South"
+											toolTip="@Resource(key='label.south', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_down.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -706,7 +707,7 @@
 											height="29"
 											bottom="5"
 											left="5"
-											toolTip="Southwest"
+											toolTip="@Resource(key='label.southwest', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_bottom_left.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -715,7 +716,7 @@
 											height="29"
 											bottom="5"
 											verticalCenter="0"
-											toolTip="West"
+											toolTip="@Resource(key='label.west', bundle='otlibControls')"
 											icon="@Embed('assets/arrow_left.png')"
 											skinClass="nail.otlib.components.skins.DirectionButtonSkin"
 											click="directionButtonClickHandler(event)"/>
@@ -747,7 +748,7 @@
 							  verticalAlign="middle"
 							  horizontalAlign="right"
 							  visible="{_thingBinding.frames > 1}">
-						<s:Label text="Animation:"/>
+						<s:Label text="@Resource(key='tte.animation', bundle='otlibControls')"/>
 						<otlib:PatternSlider id="animationSlider"
 											 maximum="{_thingBinding.frames - 1}"
 											 change="update()"/>
@@ -760,7 +761,7 @@
 							  verticalAlign="middle"
 							  horizontalAlign="right"
 							  visible="false">
-						<s:Label text="Addon:"/>
+						<s:Label text="@Resource(key='tte.addon', bundle='otlibControls')"/>
 						<otlib:PatternSlider id="addonsSlider"
 											 maximum="{_thingBinding.patternY - 1}"
 											 change="update()"/>
@@ -772,7 +773,7 @@
 							  verticalAlign="middle"
 							  horizontalAlign="right"
 							  visible="{_thingBinding.patternZ > 1}">
-						<s:Label text="Mount:"/>
+						<s:Label text="@Resource(key='tte.mount', bundle='otlibControls')"/>
 						<otlib:PatternSlider id="mountSlider"
 											 maximum="{_thingBinding.patternZ - 1}"
 											 change="update()"/>
@@ -781,18 +782,18 @@
 					</s:HGroup>	
 					
 					<s:CheckBox id="blendLayerCheckBox"
-								label="Blend Layer"
+								label="@Resource(key='tte.blend-layer', bundle='otlibControls')"
 								visible="{_thingBinding.layers > 1}"
 								change="update()"/>
 					
 					<s:CheckBox id="showGridCheckBox"
-								label="Show Grid"
+								label="@Resource(key='tte.show-grid', bundle='otlibControls')"
 								change="{changeButtonsVisible(showGridCheckBox.selected)}"/>
 				</nail:GroupBox>
 				
 				<!-- patterns group -->
 				<nail:GroupBox id="patternsGroupBox"
-							   label="Patterns"
+							   label="@Resource(key='tte.patterns', bundle='otlibControls')"
 							   width="100%">
 					
 					<s:TileGroup right="35"
@@ -802,7 +803,7 @@
 								 paddingTop="10"
 								 paddingBottom="10">
 						
-						<s:Label text="Width:"
+						<s:Label text="@Resource(key='tte.width', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="widthNumericStepper"
@@ -810,7 +811,7 @@
 										  minimum="1"
 										  value="{_thingBinding.width}"
 										  change="{_thingBinding.width = widthNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Height:"
+						<s:Label text="@Resource(key='tte.height', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="heightNumericStepper"
@@ -818,7 +819,7 @@
 										  minimum="1"
 										  value="{_thingBinding.height}"
 										  change="{_thingBinding.height = heightNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Crop Size:"
+						<s:Label text="@Resource(key='tte.crop-size', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="cropSizeNumericStepper"
@@ -826,7 +827,7 @@
 										  maximum="1000"
 										  value="{_thingBinding.exactSize}"
 										  change="{_thingBinding.exactSize = cropSizeNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Layers:"
+						<s:Label text="@Resource(key='tte.layers', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="layersNumericStepper"
@@ -834,7 +835,7 @@
 										  minimum="1"
 										  value="{_thingBinding.layers}"
 										  change="{_thingBinding.layers = layersNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Pattern X:"
+						<s:Label text="@Resource(key='tte.pattern-x', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="patternXNumericStepper"
@@ -842,7 +843,7 @@
 										  minimum="1"
 										  value="{_thingBinding.patternX}"
 										  change="{_thingBinding.patternX = patternXNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Pattern Y:"
+						<s:Label text="@Resource(key='tte.pattern-y', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="patternYNumericStepper"
@@ -850,7 +851,7 @@
 										  minimum="1"
 										  value="{_thingBinding.patternY}"
 										  change="{_thingBinding.patternY = patternYNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Pattern Z:"
+						<s:Label text="@Resource(key='tte.pattern-z', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="patternZNumericStepper"
@@ -858,7 +859,7 @@
 										  minimum="1"
 										  value="{_thingBinding.patternZ}"
 										  change="{_thingBinding.patternZ = patternZNumericStepper.value}; textureUpdate(event)"/>
-						<s:Label text="Animations:"
+						<s:Label text="@Resource(key='tte.animations', bundle='otlibControls')"
 								 verticalAlign="middle"
 								 textAlign="right"/>
 						<s:NumericStepper id="framesNumericStepper"
@@ -872,7 +873,7 @@
 				
 				<!-- ground group -->
 				<nail:GroupCheckBox id="groundGroupCheckBox" 
-									label="Ground"
+									label="@Resource(key='tte.ground', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.isGround}"
 									change="{_thingBinding.isGround = groundGroupCheckBox.selected}">
@@ -887,7 +888,9 @@
 												verticalAlign="middle"
 												horizontalAlign="right"/>
 						</s:layout>
-						<s:Label text="Speed:" width="60" textAlign="right"/>
+						<s:Label text="@Resource(key='tte.speed', bundle='otlibControls')"
+								 minWidth="60"
+								 textAlign="right"/>
 						<s:NumericStepper id="groundSpeedNumericStepper"
 										  width="80"
 										  maximum="1000"
@@ -899,7 +902,7 @@
 				
 				<!-- has ligth group -->
 				<nail:GroupCheckBox id="hasLigthGroupCheckBox"
-									label="Has Light"
+									label="@Resource(key='tte.has-light', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.hasLight}"
 									change="{_thingBinding.hasLight = hasLigthGroupCheckBox.selected}">
@@ -915,7 +918,9 @@
 						<s:HGroup width="100%"
 								  verticalAlign="middle"
 								  horizontalAlign="right">
-							<s:Label text="Color:" width="60" textAlign="right"/>
+							<s:Label text="@Resource(key='tte.light-color', bundle='otlibControls')"
+									 minWidth="60"
+									 textAlign="right"/>
 							<s:NumericStepper id="lightColorNumericStepper"
 											  width="80" 
 											  maximum="215"
@@ -928,7 +933,9 @@
 						<s:HGroup width="100%" 
 								  verticalAlign="middle"
 								  horizontalAlign="right">
-							<s:Label text="Intensity:" width="60" textAlign="right"/>
+							<s:Label text="@Resource(key='tte.light-intensity', bundle='otlibControls')"
+									 minWidth="60"
+									 textAlign="right"/>
 							<s:NumericStepper id="lightLevelNumericStepper"
 											  width="80"
 											  value="{_thingBinding.lightLevel}"
@@ -940,7 +947,7 @@
 				
 				<!-- automap group -->
 				<nail:GroupCheckBox id="automapGroupCheckBox" 
-									label="Automap"
+									label="@Resource(key='tte.automap', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.miniMap}"
 									change="{_thingBinding.miniMap = automapGroupCheckBox.selected}">
@@ -955,7 +962,9 @@
 												verticalAlign="middle"
 												horizontalAlign="right"/>
 						</s:layout>
-						<s:Label text="Color:" width="60" textAlign="right"/>
+						<s:Label text="@Resource(key='tte.automap-color', bundle='otlibControls')" 
+								 minWidth="60"
+								 textAlign="right"/>
 						<s:NumericStepper id="automapColorNumericStepper"
 										  width="80"
 										  maximum="215"
@@ -969,7 +978,7 @@
 				
 				<!-- has offset group -->
 				<nail:GroupCheckBox id="hasOffsetGroupCheckBox"
-									label="Has Offset"
+									label="@Resource(key='tte.has-offset', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.hasOffset}"
 									change="{_thingBinding.hasOffset = hasOffsetGroupCheckBox.selected}">
@@ -985,7 +994,9 @@
 						<s:HGroup width="100%"
 								  verticalAlign="middle"
 								  horizontalAlign="right">
-							<s:Label text="X:" width="60" textAlign="right"/>
+							<s:Label text="@Resource(key='tte.offsetx', bundle='otlibControls')" 
+									 minWidth="60"
+									 textAlign="right"/>
 							<s:NumericStepper id="offsetXNumericStepper"
 											  width="80"
 											  value="{_thingBinding.offsetX}"
@@ -995,7 +1006,9 @@
 						<s:HGroup width="100%"
 								  verticalAlign="middle"
 								  horizontalAlign="right">
-							<s:Label text="Y:" width="60" textAlign="right"/>
+							<s:Label text="@Resource(key='tte.offsety', bundle='otlibControls')"
+									 minWidth="60" 
+									 textAlign="right"/>
 							<s:NumericStepper id="offsetYNumericStepper"
 											  width="80"
 											  value="{_thingBinding.offsetY}"
@@ -1007,7 +1020,7 @@
 				
 				<!-- has elevation group -->
 				<nail:GroupCheckBox id="hasElevationGroupCheckBox" 
-									label="Has Elevation"
+									label="@Resource(key='tte.has-elevation', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.hasElevation}"
 									change="{_thingBinding.hasElevation = hasElevationGroupCheckBox.selected}">
@@ -1022,7 +1035,9 @@
 												verticalAlign="middle"
 												horizontalAlign="right"/>
 						</s:layout>
-						<s:Label text="Height:" width="60" textAlign="right"/>
+						<s:Label text="@Resource(key='tte.elevation-height', bundle='otlibControls')"
+								 minWidth="60"
+								 textAlign="right"/>
 						<s:NumericStepper id="elevationHeightNumericStepper"
 										  width="80"
 										  value="{_thingBinding.elevation}"
@@ -1038,7 +1053,7 @@
 				
 				<!-- equip group -->
 				<nail:GroupCheckBox id="equipGroupCheckBox" 
-									label="Equip"
+									label="@Resource(key='tte.equip', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.cloth}"
 									change="{_thingBinding.cloth = equipGroupCheckBox.selected;
@@ -1054,27 +1069,29 @@
 												verticalAlign="middle"
 												horizontalAlign="right"/>
 						</s:layout>
-						<s:Label text="Slot:" width="60" textAlign="right"/>
+						<s:Label text="@Resource(key='tte.equip-slot', bundle='otlibControls')"
+								 minWidth="60"
+								 textAlign="right"/>
 						<s:DropDownList id="equipSlotDropDownList"
 										width="100%" 
 										height="20"
 										fontSize="10"
-										prompt="None"
+										prompt="@Resource(key='tte.equip-slot-prompt', bundle='otlibControls')"
 										selectedIndex="{_thingBinding.clothSlot}"
 										change="{_thingBinding.clothSlot = equipSlotDropDownList.selectedIndex}">
 							<s:dataProvider>
 								<s:ArrayList>
-									<fx:String>Two Hand Weapon</fx:String>
-									<fx:String>Helmet</fx:String>
-									<fx:String>Amulet</fx:String>
-									<fx:String>Backpack</fx:String>
-									<fx:String>Armor</fx:String>
-									<fx:String>Shield</fx:String>
-									<fx:String>One Hand Weapon</fx:String>
-									<fx:String>Legs</fx:String>
-									<fx:String>Boots</fx:String>
-									<fx:String>Ring</fx:String>
-									<fx:String>Arrow</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-two-hand-weapon')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-helmet')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-amulet')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-backpack')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-armor')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-shield')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-one-hand-weapon')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-legs')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-boots')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-ring')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.slot-arrow')}</fx:String>
 								</s:ArrayList>
 							</s:dataProvider>
 						</s:DropDownList>
@@ -1083,7 +1100,7 @@
 				
 				<!-- market group -->
 				<nail:GroupCheckBox id="marketGroupCheckBox"
-									label="Market"
+									label="@Resource(key='tte.market', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.isMarketItem}"
 									change="{_thingBinding.isMarketItem = marketGroupCheckBox.selected}">
@@ -1094,14 +1111,23 @@
 							<s:VerticalLayout paddingLeft="10"
 											  paddingRight="45"
 											  paddingTop="20"
-											  paddingBottom="10"/>
+											  paddingBottom="10" />
 						</s:layout>
-						<s:Label text="Name:" width="60"/>
-						<s:TextInput id="marketNameTextInput" width="100%"
-									 text="{_thingBinding.marketName}"
-									 change="{_thingBinding.marketName = marketNameTextInput.text}"/>
-						<s:HGroup width="100%" verticalAlign="middle">
-							<s:Label text="Category:" width="60" textAlign="right"/>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="@Resource(key='tte.market-name', bundle='otlibControls')" width="60"/>
+							<s:TextInput id="marketNameTextInput" width="100%"
+										 text="{_thingBinding.marketName}"
+										 change="{_thingBinding.marketName = marketNameTextInput.text}"/>
+						</s:HGroup>
+						
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="@Resource(key='tte.market-category', bundle='otlibControls')"
+									 minWidth="60" 
+									 textAlign="right"/>
 							<s:DropDownList id="marketCategoryDropDownList"
 											width="170" 
 											height="20"
@@ -1109,34 +1135,38 @@
 											selectedIndex="{_thingBinding.marketCategory == 0 ? 8 : _thingBinding.marketCategory - 1}"
 											change="{_thingBinding.marketCategory = marketCategoryDropDownList.selectedIndex + 1}">
 								<s:ArrayList>
-									<fx:String>Armors</fx:String>
-									<fx:String>Amulets</fx:String>
-									<fx:String>Boots</fx:String>
-									<fx:String>Containers</fx:String>
-									<fx:String>Decoration</fx:String>
-									<fx:String>Foods</fx:String>
-									<fx:String>Helmets and Hats</fx:String>
-									<fx:String>Legs</fx:String>
-									<fx:String>Others</fx:String>
-									<fx:String>Potions</fx:String>
-									<fx:String>Rings</fx:String>
-									<fx:String>Runes</fx:String>
-									<fx:String>Shields</fx:String>
-									<fx:String>Tools</fx:String>
-									<fx:String>Valuables</fx:String>
-									<fx:String>Ammunition</fx:String>
-									<fx:String>Axes</fx:String>
-									<fx:String>Clubs</fx:String>
-									<fx:String>Distance</fx:String>
-									<fx:String>Swords</fx:String>
-									<fx:String>Wands and Rods</fx:String>
-									<fx:String>Premium Scrolls</fx:String>
-									<fx:String>Meta Weapons</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-armors')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-amulets')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-boots')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-containers')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-decoration')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-foods')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-helmets-and-hats')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-legs')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-others')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-potions')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-rings')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-runes')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-shields')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-tools')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-valuables')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-ammunition')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-axes')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-clubs')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-distance')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-swords')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-wands-and-rods')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-premium-scrolls')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.market-meta-weapons')}</fx:String>
 								</s:ArrayList>
 							</s:DropDownList>
 						</s:HGroup>
-						<s:HGroup width="100%" verticalAlign="middle">
-							<s:Label text="Trade As:" width="60" textAlign="right"/>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="@Resource(key='tte.market-trade-as', bundle='otlibControls')"
+									 minWidth="60"
+									 textAlign="right"/>
 							<s:NumericStepper id="tradeAsNumericStepper"
 											  width="80"
 											  minimum="0"
@@ -1144,8 +1174,12 @@
 											  value="{_thingBinding.marketTradeAs}"
 											  change="{_thingBinding.marketTradeAs = tradeAsNumericStepper.value}"/>
 						</s:HGroup>					
-						<s:HGroup width="100%" verticalAlign="middle">
-							<s:Label text="Show As:" width="60" textAlign="right"/>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="@Resource(key='tte.market-show-as', bundle='otlibControls')"
+									 minWidth="60" 
+									 textAlign="right"/>
 							<s:NumericStepper id="showAsNumericStepper"
 											  width="80"
 											  minimum="0"
@@ -1153,8 +1187,12 @@
 											  value="{_thingBinding.marketShowAs}"
 											  change="{_thingBinding.marketShowAs = showAsNumericStepper.value}"/>
 						</s:HGroup>					
-						<s:HGroup width="100%" verticalAlign="middle">
-							<s:Label text="Vocation:" width="60" textAlign="right"/>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="@Resource(key='tte.market-vocation', bundle='otlibControls')"
+									 minWidth="60"
+									 textAlign="right"/>
 							<s:NumericStepper id="vocationNumericStepper"
 											  width="80"
 											  minimum="0"
@@ -1162,21 +1200,25 @@
 											  value="{_thingBinding.marketRestrictProfession}"
 											  change="{_thingBinding.marketRestrictProfession = vocationNumericStepper.value}"/>
 						</s:HGroup>					
-						<s:HGroup width="100%" verticalAlign="middle">
-							<s:Label text="Level:" width="60" textAlign="right"/>
+						<s:HGroup width="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<s:Label text="@Resource(key='tte.market-level', bundle='otlibControls')" 
+									 minWidth="60"
+									 textAlign="right"/>
 							<s:NumericStepper id="marketRestrictLevelNumericStepper"
 											  width="80"
 											  minimum="0"
 											  maximum="0xFFFFFF"
 											  value="{_thingBinding.marketRestrictLevel}"
 											  change="{_thingBinding.marketRestrictLevel = marketRestrictLevelNumericStepper.value}"/>
-						</s:HGroup>					
-					</s:Group>				
+						</s:HGroup>
+					</s:Group>
 				</nail:GroupCheckBox>
 				
 				<!-- write / read group -->
 				<nail:GroupBox id="writeReadGroupCheckBox"
-							   label="Write / Read"
+							   label="@Resource(key='tte.write-read', bundle='otlibControls')"
 							   width="100%">
 					<s:Group width="100%"
 							 height="100%">
@@ -1188,21 +1230,21 @@
 											  horizontalAlign="right"/>
 						</s:layout>
 						<s:CheckBox id="writableCheckBox"
-									label="Writable"
-									minWidth="80"
+									label="@Resource(key='tte.writable', bundle='otlibControls')"
+									minWidth="100"
 									selected="{_thingBinding.writable}"
 									change="{_thingBinding.writable = writableCheckBox.selected}"/>
 						<s:CheckBox id="writableOnceCheckBox"
-									label="Writable Once"
-									minWidth="80"
+									label="@Resource(key='tte.writable-once', bundle='otlibControls')"
+									minWidth="100"
 									selected="{_thingBinding.writableOnce}"
 									change="{_thingBinding.writableOnce = writableOnceCheckBox.selected}"/>
 						<s:HGroup width="100%" 
 								  verticalAlign="middle"
 								  horizontalAlign="right"
 								  enabled="{writableCheckBox.selected || writableOnceCheckBox.selected}">
-							<s:Label text="Max Length:"
-									 width="80"
+							<s:Label text="@Resource(key='tte.max-length', bundle='otlibControls')"
+									 minWidth="80"
 									 textAlign="right"/>
 							<s:NumericStepper id="maxTextLengthNumericStepper" width="80"
 											  value="{_thingBinding.maxTextLength}"
@@ -1212,7 +1254,7 @@
 				</nail:GroupBox>
 				
 				<nail:GroupCheckBox id="actionGroupCheckBox" 
-									label="Action"
+									label="@Resource(key='tte.action', bundle='otlibControls')"
 									width="100%"
 									selected="{_thingBinding.hasDefaultAction}"
 									change="{_thingBinding.hasDefaultAction = actionGroupCheckBox.selected}">
@@ -1227,7 +1269,7 @@
 												verticalAlign="middle"
 												horizontalAlign="right"/>
 						</s:layout>
-						<s:Label text="Type:"
+						<s:Label text="@Resource(key='tte.action-type', bundle='otlibControls')"
 								 textAlign="right"
 								 width="60"/>
 						<s:DropDownList id="actionDropDownList"
@@ -1238,11 +1280,11 @@
 										change="{_thingBinding.defaultAction = actionDropDownList.selectedIndex}">
 							<s:dataProvider>
 								<s:ArrayList>
-									<fx:String>None</fx:String>
-									<fx:String>Look</fx:String>
-									<fx:String>Use</fx:String>
-									<fx:String>Open</fx:String>
-									<fx:String>Auto Walk Higthlight</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.action-none')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.action-look')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.action-use')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.action-open')}</fx:String>
+									<fx:String>{resourceManager.getString('otlibControls', 'tte.action-autowalk-highlight')}</fx:String>
 								</s:ArrayList>
 							</s:dataProvider>
 						</s:DropDownList>
@@ -1251,7 +1293,7 @@
 			</s:VGroup>
 			
 			<nail:GroupBox id="flagsGroupBox"
-						   label="Flags"
+						   label="@Resource(key='tte.flags', bundle='otlibControls')"
 						   width="100%">
 				<nail:layout>
 					<s:HorizontalLayout paddingLeft="10"
@@ -1264,58 +1306,58 @@
 						  width="100%"
 						  height="100%">
 					<s:CheckBox id="clipCheckBox"
-								label="Clip"
-								toolTip="Borders"
+								label="@Resource(key='thing.is-on-clip', bundle='otlibControls')"
+								toolTip="@Resource(key='tte.tool-tip-clip', bundle='otlibControls')"
 								selected="{_thingBinding.isGroundBorder}"
 								change="{_thingBinding.isGroundBorder = clipCheckBox.selected}"/>
 					<s:CheckBox id="bottomCheckBox"
-								label="Bottom"
-								toolTip="Walls"
+								label="@Resource(key='thing.is-on-bottom', bundle='otlibControls')"
+								toolTip="@Resource(key='tte.tool-tip-bottom', bundle='otlibControls')"
 								selected="{_thingBinding.isOnBottom}"
 								change="{_thingBinding.isOnBottom = bottomCheckBox.selected}"/>
 					<s:CheckBox id="topCheckBox"
-								label="Top"
-								toolTip="Archways"
+								label="@Resource(key='thing.is-on-top', bundle='otlibControls')"
+								toolTip="@Resource(key='tte.tool-tip-top', bundle='otlibControls')"
 								selected="{_thingBinding.isOnTop}"
 								change="{_thingBinding.isOnTop = topCheckBox.selected}"/>
 					<s:CheckBox id="containerCheckBox"
-								label="Container"
+								label="@Resource(key='thing.container', bundle='otlibControls')"
 								selected="{_thingBinding.isContainer}"
 								change="{_thingBinding.isContainer = containerCheckBox.selected}"/>
 					<s:CheckBox id="stackableCheckBox"
-								label="Stackable"
+								label="@Resource(key='thing.stackable', bundle='otlibControls')"
 								selected="{_thingBinding.stackable}"
 								change="{_thingBinding.stackable = stackableCheckBox.selected}"/>
 					<s:CheckBox id="forceUseCheckBox"
-								label="Force Use"
+								label="@Resource(key='thing.force-use', bundle='otlibControls')"
 								selected="{_thingBinding.forceUse}"
 								change="{_thingBinding.forceUse = forceUseCheckBox.selected}"/>
 					<s:CheckBox id="multiUseCheckBox"
-								label="Multi Use"
+								label="@Resource(key='thing.multi-use', bundle='otlibControls')"
 								selected="{_thingBinding.multiUse}"
 								change="{_thingBinding.multiUse = multiUseCheckBox.selected}"/>
 					<s:CheckBox id="liquidContainerCheckBox"
-								label="Fluid Container"
+								label="@Resource(key='thing.fluid-container', bundle='otlibControls')"
 								selected="{_thingBinding.isFluidContainer}"
 								change="{_thingBinding.isFluidContainer = liquidContainerCheckBox.selected}"/>
 					<s:CheckBox id="liquidPoolCheckBox"
-								label="Fluid Pool"
+								label="@Resource(key='thing.fluid', bundle='otlibControls')"
 								selected="{_thingBinding.isFluid}"
 								change="{_thingBinding.isFluid = liquidPoolCheckBox.selected}"/>
 					<s:CheckBox id="unpassableCheckBox" 
-								label="Unpassable"
+								label="@Resource(key='thing.unpassable', bundle='otlibControls')"
 								selected="{_thingBinding.isUnpassable}"
 								change="{_thingBinding.isUnpassable = unpassableCheckBox.selected}"/>
-					<s:CheckBox id="unmoveableCheckBox" 
-								label="Unmoveable"
+					<s:CheckBox id="unmovableCheckBox" 
+								label="@Resource(key='thing.unmovable', bundle='otlibControls')"
 								selected="{_thingBinding.isUnmoveable}"
-								change="{_thingBinding.isUnmoveable = unmoveableCheckBox.selected}"/>
+								change="{_thingBinding.isUnmoveable = unmovableCheckBox.selected}"/>
 					<s:CheckBox id="blockMissileCheckBox"
-								label="Block Missile"
+								label="@Resource(key='thing.block-missile', bundle='otlibControls')"
 								selected="{_thingBinding.blockMissile}"
 								change="{_thingBinding.blockMissile = blockMissileCheckBox.selected}"/>
 					<s:CheckBox id="blockPathfindCheckBox"
-								label="Block Pathfind"
+								label="@Resource(key='thing.block-pathfinder', bundle='otlibControls')"
 								selected="{_thingBinding.blockPathfind}"
 								change="{_thingBinding.blockPathfind = blockPathfindCheckBox.selected}"/>
 				</s:VGroup>
@@ -1325,63 +1367,63 @@
 						  height="100%">
 					
 					<s:CheckBox id="noMoveAnimationCheckBox"
-								label="No Move Animation"
+								label="@Resource(key='thing.no-move-animation', bundle='otlibControls')"
 								selected="{_thingBinding.noMoveAnimation}"
 								change="{_thingBinding.noMoveAnimation = noMoveAnimationCheckBox.selected}"/>
 					<s:CheckBox id="pickupableCheckBox"
-								label="Pickupable"
+								label="@Resource(key='thing.pickupable', bundle='otlibControls')"
 								selected="{_thingBinding.pickupable}"
 								change="{_thingBinding.pickupable = pickupableCheckBox.selected}"/>
 					<s:CheckBox id="hangableCheckBox"
-								label="Hangable"	
+								label="@Resource(key='thing.hangable', bundle='otlibControls')"	
 								selected="{_thingBinding.hangable}"
 								change="{_thingBinding.hangable = hangableCheckBox.selected}"/>
 					<s:CheckBox id="horizontalCheckBox"
-								label="Horizontal"
+								label="@Resource(key='thing.horizontal-wall', bundle='otlibControls')"
 								selected="{_thingBinding.isHorizontal}"
 								change="{_thingBinding.isHorizontal = horizontalCheckBox.selected}"/>
 					<s:CheckBox id="verticalCheckBox"
-								label="Vertical"
+								label="@Resource(key='thing.vertical-wall', bundle='otlibControls')"
 								selected="{_thingBinding.isVertical}"
 								change="{_thingBinding.isVertical = verticalCheckBox.selected}"/>
 					<s:CheckBox id="rotatableCheckBox"
-								label="Rotatable"
+								label="@Resource(key='thing.rotatable', bundle='otlibControls')"
 								selected="{_thingBinding.rotatable}"
 								change="{_thingBinding.rotatable = rotatableCheckBox.selected}"/>
 					<s:CheckBox id="dontHideCheckBox"
-								label="Don't Hide"
+								label="@Resource(key='thing.dont-hide', bundle='otlibControls')"
 								selected="{_thingBinding.dontHide}"
 								change="{_thingBinding.dontHide = dontHideCheckBox.selected}"/>
 					<s:CheckBox id="translucentCheckBox"
-								label="Translucent"
+								label="@Resource(key='thing.translucent', bundle='otlibControls')"
 								selected="{_thingBinding.isTranslucent}"
 								change="{_thingBinding.isTranslucent = translucentCheckBox.selected}"/>
 					<s:CheckBox id="isLyingObjectCheckBox"
-								label="Lying Object"
+								label="@Resource(key='thing.lying-object', bundle='otlibControls')"
 								selected="{_thingBinding.isLyingObject}"
 								change="{_thingBinding.isLyingObject = isLyingObjectCheckBox.selected}"/>
 					<s:CheckBox id="animateAlwaysCheckBox"
-								label="Animate Always"
+								label="@Resource(key='thing.animate-always', bundle='otlibControls')"
 								selected="{_thingBinding.animateAlways}"
 								change="{_thingBinding.animateAlways = animateAlwaysCheckBox.selected}"/>
 					<s:CheckBox id="fullGroundCheckBox"
-								label="Full Ground"
+								label="@Resource(key='thing.full-ground', bundle='otlibControls')"
 								selected="{_thingBinding.isFullGround}"
 								change="{_thingBinding.isFullGround = fullGroundCheckBox.selected}"/>
 					<s:CheckBox id="ignoreLookCheckBox"
-								label="Ignore Look"
+								label="@Resource(key='thing.ignore-look', bundle='otlibControls')"
 								selected="{_thingBinding.ignoreLook}"
 								change="{_thingBinding.ignoreLook = ignoreLookCheckBox.selected}"/>
 					<s:CheckBox id="usableCheckBox"
-								label="Usable"
+								label="@Resource(key='thing.usable', bundle='otlibControls')"
 								selected="{_thingBinding.usable}"
 								change="{_thingBinding.usable = usableCheckBox.selected}"/>
 					<s:CheckBox id="chargesCheckBox"
-								label="Has Charges"
+								label="@Resource(key='thing.has-charges', bundle='otlibControls')"
 								selected="{_thingBinding.hasCharges}"
 								change="{_thingBinding.hasCharges = chargesCheckBox.selected}"/>
 					<s:CheckBox id="floorChangeCheckBox"
-								label="Floor Change"
+								label="@Resource(key='thing.floor-change', bundle='otlibControls')"
 								selected="{_thingBinding.floorChange}"
 								change="{_thingBinding.floorChange = floorChangeCheckBox.selected}"/>
 				</s:VGroup>

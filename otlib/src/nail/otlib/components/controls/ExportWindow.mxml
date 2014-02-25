@@ -29,7 +29,7 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns:nail="library://ns.nail.com/naillib"
-		  title="Export"
+		  title="@Resource(key='ew.title', bundle='otlibControls')"
 		  showStatusBar="false"
 		  backgroundColor="0x494949"
 		  width="400"
@@ -48,6 +48,10 @@
 						  paddingBottom="10"
 						  horizontalAlign="right"/>
 	</s:layout>
+	
+	<fx:Metadata>
+		[ResourceBundle("otlibControls")]
+	</fx:Metadata>
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="formatRadioButtonGroup"
@@ -227,7 +231,7 @@
 				path = _directory != null ? _directory.nativePath : File.documentsDirectory.nativePath;
 				dir = new File(path);
 				dir.addEventListener(Event.SELECT, fileSelectHandler);
-				dir.browseForDirectory("Select Folder");
+				dir.browseForDirectory(resourceManager.getString("otlibControls", "ew.select-folder"));
 				
 				function fileSelectHandler(event:Event) : void
 				{
@@ -354,7 +358,7 @@
 	</fx:Script>
 	
 	<s:Group width="100%">
-		<s:Label text="Name:"
+		<s:Label text="@Resource(key='label.name-', bundle='otlibControls')"
 				 fontSize="10"
 				 color="0xDFDFDF"/>
 		<s:TextInput id="nameTextInput"
@@ -365,7 +369,7 @@
 	</s:Group>
 	
 	<s:Group width="100%">
-		<s:Label text="Output Folder:"
+		<s:Label text="@Resource(key='ew.output-folder-', bundle='otlibControls')"
 				 fontSize="10"
 				 color="0xDFDFDF"/>
 		<s:TextInput id="directoryTextInput"
@@ -374,14 +378,14 @@
 					 top="15"
 					 change="directoryTextInputChangeHandler(event)"/>
 		<s:Button id="browseButton"
-				  label="Browse"
+				  label="@Resource(key='label.browse', bundle='otlibControls')"
 				  height="22"
 				  top="15"
 				  right="0"
 				  click="browseButtonClickHandler(event)"/>
 	</s:Group>
 	
-	<nail:GroupBox label="Format"
+	<nail:GroupBox label="@Resource(key='label.format', bundle='otlibControls')"
 				   width="100%">
 		<nail:layout>
 			<s:HorizontalLayout gap="20"
@@ -427,13 +431,13 @@
 			  verticalAlign="middle"
 			  horizontalAlign="right">
 		<s:Button id="confirmButton"
-				  label="Confirm"
-				  width="70"
+				  label="@Resource(key='label.confirm', bundle='otlibControls')"
+				  minWidth="70"
 				  enabled="false"
 				  click="confirmButtonClickHandler(event)"/>
 		<s:Button id="cancelButton"
-				  label="Cancel"
-				  width="70"
+				  label="@Resource(key='label.cancel', bundle='otlibControls')"
+				  minWidth="70"
 				  click="close()"/>
 	</s:HGroup>
 </s:Window>

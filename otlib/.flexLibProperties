@@ -3,11 +3,11 @@
   <includeClasses>
     <classEntry path="OTLibClasses"/>
     <classEntry path="nail.otlib.things.ThingTypeStorage"/>
-    <classEntry path="nail.otlib.things.ThingTypeFlags"/>
+    <classEntry path="nail.otlib.things.ThingTypeFlags2"/>
     <classEntry path="nail.otlib.components.controls.ThingTypeEditor"/>
     <classEntry path="nail.otlib.things.BindableThingType"/>
     <classEntry path="nail.otlib.utils.ThingUtils"/>
-    <classEntry path="nail.otlib.things.ThingTypeFlags2"/>
+    <classEntry path="nail.otlib.things.ThingTypeFlags3"/>
     <classEntry path="nail.otlib.events.ThingEditorEvent"/>
     <classEntry path="nail.otlib.utils.ThingData"/>
     <classEntry path="nail.otlib.components.controls.HSIColorPicker"/>
