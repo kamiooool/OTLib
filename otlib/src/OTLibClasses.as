@@ -51,5 +51,8 @@ package
 		import nail.otlib.components.skins.PatternSliderThumbSkin; PatternSliderThumbSkin;
 		import nail.otlib.components.skins.PatternSliderTrackSkin; PatternSliderTrackSkin;
 		import nail.otlib.loaders.ThingDataLoader; ThingDataLoader;
+		import nail.otlib.geom.Direction; Direction;
+		import nail.otlib.geom.Position; Position;
+		import nail.otlib.geom.Rect; Rect;
 	}
 }
