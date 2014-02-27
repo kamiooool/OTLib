@@ -36,11 +36,8 @@ package nail.otlib.sprites
 		//--------------------------------------------------------------------------
 		
 		private var _id : uint;
-		
 		private var _bytes : ByteArray;
-		
 		private var _size : uint;
-		
 		public var dummy : Boolean;
 		
 		//--------------------------------------------------------------------------
@@ -238,7 +235,6 @@ package nail.otlib.sprites
 		//--------------------------------------------------------------------------
 		
 		static public const SPRITE_PIXELS : uint = 32; 
-		
 		static public const SPRITE_DATA_SIZE : uint = 4096; // SPRITE_PIXELS * SPRITE_PIXELS * 4 bytes;
 	}
 }

@@ -44,31 +44,18 @@ package nail.otlib.components.controls
 		//--------------------------------------------------------------------------
 		
 		private var _columns : uint;
-		
 		private var _rows : uint;
-		
 		private var _length : uint;
-		
 		private var _lengthChanged : Boolean;
-		
 		private var _bounds : Rectangle;
-		
 		private var _highlight : UIComponent;
-		
 		private var _selection : UIComponent;
-		
 		private var _swatchWidth : Number;
-		
 		private var _swatchHeight : Number;
-		
 		private var _swatchGap : Number;
-		
 		private var _overIndex : int;
-		
 		private var _selectedIndex : int;
-		
 		private var _proposedSelectedIndex : int;
-		
 		private var _selectedIndexFlag : Boolean;
 		
 		//--------------------------------------------------------------------------

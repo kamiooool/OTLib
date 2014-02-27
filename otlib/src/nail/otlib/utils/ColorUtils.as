@@ -50,7 +50,6 @@ package nail.otlib.utils
 			var R : uint = color >> 16 & 0xFF;
 			var G : uint = color >> 8 & 0xFF;
 			var B : uint = color & 0xFF;
-			
 			alpha = alpha > 0xFF ? 0xFF : alpha;
 			return (alpha << 24 | R << 16 | G << 8 | B);
 		}
@@ -185,10 +184,7 @@ package nail.otlib.utils
 			var G : Number;
 			var B : Number;
 			
-			if (color >= 216)
-			{
-				return 0;
-			}
+			if (color >= 216) { return 0; }
 			
 			R = int(color / 36) % 6 * 51;
 			G = int(color / 6) % 6 * 51;

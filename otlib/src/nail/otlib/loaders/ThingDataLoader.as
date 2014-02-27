@@ -52,13 +52,9 @@ package nail.otlib.loaders
 		//--------------------------------------------------------------------------
 		
 		private var _browseFrom : File;
-		
 		private var _thingDataList : Vector.<ThingData>;
-		
 		private var _files : Array;
-		
 		private var _index : int;
-		
 		private var _directory : File;
 		
 		//--------------------------------------------------------------------------
@@ -161,7 +157,6 @@ package nail.otlib.loaders
 			var file : File;
 			
 			_index++;
-			
 			if (_index >= _files.length)
 			{
 				dispatchEvent(new Event(Event.COMPLETE));
@@ -169,7 +164,6 @@ package nail.otlib.loaders
 			}
 			
 			file = _files[_index];
-			
 			if (file.extension == OTFormat.OBD)
 			{
 				loadOBD(file);

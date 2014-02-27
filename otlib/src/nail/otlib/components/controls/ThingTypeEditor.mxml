@@ -70,19 +70,12 @@
 			
 			[Bindable]
 			private var _thingData : ThingData;
-			
 			private var _thingDataChanged : Boolean;
-			
 			private var _changed : Boolean;
-			
 			private var _loading : Boolean;
-			
 			private var _rect : Rectangle;
-			
 			private var _point : Point;
-			
 			private var _patternX : uint;
-			
 			private var _patternY : uint;
 			
 			//--------------------------------------------------------------------------

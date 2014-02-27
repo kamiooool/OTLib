@@ -62,25 +62,15 @@
 			
 			[Bindable]
 			private var _sprites : ArrayCollection = new ArrayCollection();
-			
 			private var _surfaceCells : SurfaceCells;
-			
 			private var _rect : Rectangle = new Rectangle();
-			
 			private var _bitmap : BitmapData;
-			
 			private var _nextBitmap : BitmapData;
-			
 			private var _bitmapChanged : Boolean;
-			
 			private var _mouseDown : Boolean;
-			
 			private var _zoom : Number;
-			
 			private var _zoomChanged : Boolean;
-			
 			private var _lastValues : Rectangle = new Rectangle();
-			
 			private var _import : Boolean;
 			
 			//--------------------------------------------------------------------------

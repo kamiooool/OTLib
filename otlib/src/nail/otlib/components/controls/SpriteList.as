@@ -34,13 +34,9 @@ package nail.otlib.components.controls
 	import nail.otlib.utils.SpriteData;
 	
 	[Event(name="copy", type="nail.otlib.events.SpriteListEvent")]
-	
 	[Event(name="paste", type="nail.otlib.events.SpriteListEvent")]
-	
 	[Event(name="replace", type="nail.otlib.events.SpriteListEvent")]
-	
 	[Event(name="export", type="nail.otlib.events.SpriteListEvent")]
-	
 	[Event(name="remove", type="nail.otlib.events.SpriteListEvent")]
 	
 	public class SpriteList extends List

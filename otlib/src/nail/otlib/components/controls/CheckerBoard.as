@@ -38,25 +38,10 @@ package nail.otlib.components.controls
 		// PROPERTIES
 		//
 		//--------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */ 
+		 
 		private var _cellSize : uint;
-		
-		/**
-		 * @private
-		 */ 
 		private var _cellSizeFlag : Boolean;
-		
-		/**
-		 * @private
-		 */ 
 		private var _rect : Rectangle;
-		
-		/**
-		 * @private
-		 */ 
 		private var _bitmap : BitmapData;
 		
 		//--------------------------------------------------------------------------

@@ -48,15 +48,10 @@
 			//--------------------------------------------------------------------------
 			
 			private var _thingData : ThingData;
-			
 			private var _rect : Rectangle = new Rectangle(0, 0, 32, 32);
-			
 			private var _fillRect : Rectangle = new Rectangle();
-			
 			private var _point : Point = new Point();
-			
 			private var _timer : Timer;
-			
 			private var _frame : uint;
 			
 			//--------------------------------------------------------------------------

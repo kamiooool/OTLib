@@ -46,9 +46,7 @@ package nail.otlib.utils
 		//--------------------------------------------------------------------------
 		
 		static public const OTBM : String = "otbm";
-		
 		static public const OTB : String = "otb";
-		
 		static public const OBD : String = "obd";
 	}
 }

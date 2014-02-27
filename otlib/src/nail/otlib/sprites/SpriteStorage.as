@@ -44,11 +44,8 @@ package nail.otlib.sprites
 	import nail.otlib.assets.AssetsVersion;
 
 	[Event(name="complete", type="flash.events.Event")]
-	
 	[Event(name="change", type="flash.events.Event")]
-	
 	[Event(name="progress", type="flash.events.ProgressEvent")]
-	
 	[Event(name="error", type="flash.events.ErrorEvent")]
 	
 	public class SpriteStorage extends EventDispatcher
@@ -60,29 +57,17 @@ package nail.otlib.sprites
 		//--------------------------------------------------------------------------
 		
 		private var _version : AssetsVersion;
-		
 		private var _signature : uint;
-		
 		private var _rawBytes : ByteArray;
-		
 		private var _spritesCount : uint;
-		
 		private var _sprites : Dictionary;
-		
 		private var _loading : Boolean;
-		
 		private var _loaded : Boolean;
-		
 		private var _rect : Rectangle;
-		
 		private var _point : Point;
-		
 		private var _bitmap : BitmapData;
-		
 		private var _blankSprite : Sprite;
-		
 		private var _headSize : uint;
-		
 		private var _changed : Boolean;
 		
 		//--------------------------------------------------------------------------
@@ -93,7 +78,6 @@ package nail.otlib.sprites
 		
 		public function SpriteStorage()
 		{
-			
 		}
 		
 		//--------------------------------------------------------------------------
@@ -144,7 +128,7 @@ package nail.otlib.sprites
 			loader.addEventListener(Event.COMPLETE, completeHandler);
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.load(new URLRequest(file.nativePath));
-				
+			
 			function progressHandler(event:ProgressEvent) : void
 			{
 				dispatchEvent(event);
@@ -167,7 +151,7 @@ package nail.otlib.sprites
 					_headSize = HEAD_SIZE_U16;
 				}
 				
-				_blankSprite = new Sprite(0);	
+				_blankSprite = new Sprite(0);
 				_sprites = new Dictionary();
 				_sprites[0] = _blankSprite;
 				_rect = new Rectangle(0, 0, Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS);
@@ -533,7 +517,7 @@ package nail.otlib.sprites
 				{
 					dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, currentSprite, _spritesCount));
 				}
-			}			
+			}
 			stream.close();
 			return true;
 		}
@@ -608,7 +592,6 @@ package nail.otlib.sprites
 		//--------------------------------------------------------------------------
 		
 		static private const HEAD_SIZE_U16 : uint = 6;
-		
 		static private const HEAD_SIZE_U32 : uint = 8;
 	}
 }

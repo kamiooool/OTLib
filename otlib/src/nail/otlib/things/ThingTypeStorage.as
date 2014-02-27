@@ -40,11 +40,8 @@ package nail.otlib.things
 	import nail.utils.StringUtil;
 	
 	[Event(name="complete", type="flash.events.Event")]
-	
 	[Event(name="change", type="flash.events.Event")]
-	
 	[Event(name="progress", type="flash.events.ProgressEvent")]
-	
 	[Event(name="error", type="flash.events.ErrorEvent")]
 	
 	public class ThingTypeStorage extends EventDispatcher
@@ -56,29 +53,17 @@ package nail.otlib.things
 		//--------------------------------------------------------------------------
 		
 		private var _signature : uint;
-		
 		private var _items : Dictionary;
-		
 		private var _itemsCount : uint;
-		
 		private var _outfits : Dictionary;
-		
 		private var _outfitsCount : uint;
-		
 		private var _effects : Dictionary;
-		
 		private var _effectsCount : uint;
-		
 		private var _missiles : Dictionary;
-		
 		private var _missilesCount : uint;
-		
 		private var _thingsCount : uint;
-		
 		private var _progressCount : uint; 
-		
 		private var _loading : Boolean;
-		
 		private var _loaded : Boolean;
 		
 		//--------------------------------------------------------------------------
@@ -89,7 +74,6 @@ package nail.otlib.things
 		
 		public function ThingTypeStorage()
 		{
-			
 		}
 		
 		//--------------------------------------------------------------------------
@@ -106,12 +90,12 @@ package nail.otlib.things
 		{
 			var stream : FileStream;
 			
-			if (file == null) 
+			if (file == null)
 			{
 				throw new ArgumentError("Parameter file cannot be null.");
 			}
 			
-			if (version == null) 
+			if (version == null)
 			{
 				throw new ArgumentError("Parameter version cannot be null.");
 			}
@@ -255,28 +239,20 @@ package nail.otlib.things
 			switch(category)
 			{
 				case ThingCategory.ITEM:
-				{
 					_items[id] = thing;
 					break;
-				}
 				
 				case ThingCategory.OUTFIT:
-				{
 					_outfits[id] = thing;
 					break;
-				}
 				
 				case ThingCategory.EFFECT:
-				{
 					_effects[id] = thing;
 					break;
-				}
 				
 				case ThingCategory.MISSILE:
-				{
 					_missiles[id] = thing;
 					break;
-				}
 				
 				default:
 					return false;
@@ -365,28 +341,20 @@ package nail.otlib.things
 			switch(category)
 			{
 				case ThingCategory.ITEM:
-				{
 					_itemsCount = onRemoveThing(id, category, _items, _itemsCount);
 					break;
-				}
 					
 				case ThingCategory.OUTFIT:
-				{
 					_outfitsCount = onRemoveThing(id, category, _outfits, _outfitsCount);
 					break;
-				}
 					
 				case ThingCategory.EFFECT:
-				{
 					_effectsCount = onRemoveThing(id, category, _effects, _effectsCount);
 					break;
-				}
 					
 				case ThingCategory.MISSILE:
-				{
 					_missilesCount = onRemoveThing(id, category, _missiles, _missilesCount);
 					break;
-				}
 			}
 			
 			if (hasEventListener(Event.CHANGE))
@@ -1796,13 +1764,9 @@ package nail.otlib.things
 		//--------------------------------------------------------------------------
 		
 		static public const MIN_ITEM_ID : uint = 100;
-		
 		static public const MIN_OUTFIT_ID : uint = 1;
-		
 		static public const MIN_EFFECT_ID : uint = 1;
-		
 		static public const MIN_MISSILE_ID : uint = 1;
-		
 		static public const STRING_CHARSET : String = "iso-8859-1";
 	}
 }

@@ -40,13 +40,9 @@ package nail.otlib.assets
 		//--------------------------------------------------------------------------
 		
 		private var _value : uint;
-		
 		private var _valueStr : String;
-		
 		private var _datSignature : uint;
-		
 		private var _sprSignature : uint;
-		
 		private var _otbVersion : uint;
 		
 		//--------------------------------------------------------------------------
@@ -181,7 +177,6 @@ package nail.otlib.assets
 			var version : AssetsVersion;
 			
 			list = [];
-			
 			for each (version in VERSION_LIST)
 			{
 				list.push(version);
@@ -193,7 +188,6 @@ package nail.otlib.assets
 		static public function getVersionByValue(value:uint) : AssetsVersion
 		{
 			var key : String;
-			
 			key = "$" + value;
 			if (VERSION_LIST[key] !== undefined)
 			{
@@ -205,7 +199,6 @@ package nail.otlib.assets
 		static public function getVersionBySignatures(sprSignature:uint, datSignature:uint) : AssetsVersion
 		{
 			var version : AssetsVersion;
-			
 			for each (version in VERSION_LIST)
 			{
 				if (version.sprSignature == sprSignature && version.datSignature == datSignature)
@@ -219,7 +212,6 @@ package nail.otlib.assets
 		static public function getVersionByOtb(otb:uint) : AssetsVersion
 		{
 			var version : AssetsVersion;
-			
 			for each (version in VERSION_LIST)
 			{
 				if (version.otbVersion == otb)

@@ -73,13 +73,9 @@ package nail.otlib.events
 		//--------------------------------------------------------------------------
 		
 		static public const COPY : String = "copy";
-		
 		static public const PASTE : String = "paste";
-		
 		static public const REPLACE : String = "replace";
-		
 		static public const EXPORT : String = "export";
-		
 		static public const REMOVE : String = "remove";
 	}
 }

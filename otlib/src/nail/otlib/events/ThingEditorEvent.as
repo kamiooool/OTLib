@@ -37,13 +37,9 @@ package nail.otlib.events
 		//--------------------------------------------------------------------------
 		
 		public var data : ThingData;
-		
 		public var sprite : uint;
-		
 		public var property : Object;
-		
 		public var oldValue : Object;
-		
 		public var newValue : Object;
 		
 		//--------------------------------------------------------------------------
@@ -95,9 +91,7 @@ package nail.otlib.events
 		//--------------------------------------------------------------------------
 		
 		static public const THING_CHANGE : String = "thingChange";
-		
 		static public const THING_PROPERTY_CHANGE : String = "thingPropertyChange";
-		
 		static public const SPRITE_DOUBLE_CLICK : String = "spriteDoubleClick";
 	}
 }

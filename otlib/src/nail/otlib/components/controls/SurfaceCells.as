@@ -39,11 +39,8 @@ package nail.otlib.components.controls
 		//--------------------------------------------------------------------------
 		
 		private var _columns : uint;
-		
 		private var _rows : uint;
-		
 		private var _cellWidth : uint;
-		
 		private var _cellHeight : uint;
 		
 		//--------------------------------------------------------------------------
@@ -113,7 +110,6 @@ package nail.otlib.components.controls
 			if (_cellWidth != value)
 			{
 				_cellWidth = value;
-				
 				invalidateDisplayList();
 				invalidateSize();
 			}
@@ -129,7 +125,6 @@ package nail.otlib.components.controls
 			if (_cellHeight != value)
 			{
 				_cellHeight = value;
-				
 				invalidateDisplayList();
 				invalidateSize();
 			}
@@ -145,7 +140,6 @@ package nail.otlib.components.controls
 			if (_columns != value)
 			{
 				_columns = value;
-				
 				invalidateDisplayList();
 				invalidateSize();
 			}
@@ -161,7 +155,6 @@ package nail.otlib.components.controls
 			if (_rows != value)
 			{
 				_rows = value;
-				
 				invalidateDisplayList();
 				invalidateSize();
 			}

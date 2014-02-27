@@ -47,11 +47,8 @@ package nail.otlib.things
 		//--------------------------------------------------------------------------
 		
 		static public const ITEM : String = "item";
-		
 		static public const OUTFIT : String = "outfit";
-		
 		static public const EFFECT : String = "effect";
-		
 		static public const MISSILE : String = "missile";
 		
 		static public function getCategory(value:String) : String

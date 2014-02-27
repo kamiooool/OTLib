@@ -33,9 +33,7 @@ package nail.otlib.things.items
 		//--------------------------------------------------------------------------
 		
 		public var sid : uint;
-		
 		public var cid : uint;
-		
 		public var name : String;
 		
 		//--------------------------------------------------------------------------

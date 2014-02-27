@@ -51,7 +51,6 @@ package nail.otlib.utils
 		//--------------------------------------------------------------------------
 		
 		private var _thing : ThingType;
-		
 		private var _sprites : Vector.<SpriteData>;
 		
 		//--------------------------------------------------------------------------

@@ -33,29 +33,17 @@ package nail.otlib.assets
 		//--------------------------------------------------------------------------
 		
 		public var version : uint;
-		
 		public var datSignature : uint;
-		
 		public var minItemId : uint;
-		
 		public var maxItemId : uint;
-		
 		public var minOutfitId : uint;
-		
 		public var maxOutfitId : uint;
-		
 		public var minEffectId : uint;
-		
 		public var maxEffectId : uint;
-		
 		public var minMissileId : uint;
-		
 		public var maxMissileId : uint;
-		
 		public var sprSignature : uint;
-		
 		public var minSpriteId : uint;
-		
 		public var maxSpriteId : uint;
 		
 		//--------------------------------------------------------------------------
@@ -66,7 +54,6 @@ package nail.otlib.assets
 		
 		public function AssetsInfo()
 		{
-			
 		}
 	}
 }

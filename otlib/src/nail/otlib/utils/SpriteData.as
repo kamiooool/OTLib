@@ -38,7 +38,6 @@ package nail.otlib.utils
 		//--------------------------------------------------------------------------
 		
 		public var id : uint;
-		
 		public var pixels : ByteArray;
 		
 		//--------------------------------------------------------------------------
@@ -94,9 +93,7 @@ package nail.otlib.utils
 		//--------------------------------------------------------------------------
 		
 		static private const RECTANGLE : Rectangle = new Rectangle(0, 0, Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS);
-		
 		static private const POINT : Point = new Point();
-		
 		static private const BITMAP : BitmapData = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0xFFFF00FF);
 	}
 }

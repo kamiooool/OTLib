@@ -77,27 +77,16 @@
 			
 			[Bindable]
 			private var _versionCollection : ArrayCollection = new ArrayCollection( AssetsVersion.getList() );
-			
 			private var _fileName : String;
-			
 			private var _fileNameChanged : Boolean;
-			
 			private var _directory : File;
-			
 			private var _directoryChanged : Boolean;
-			
 			private var _format : String;
-			
 			private var _formatChanged : Boolean;
-			
 			private var _enableObdFormat : Boolean;
-			
 			private var _enableObdFormatChanged : Boolean;
-			
 			private var _version : AssetsVersion;
-			
 			private var _versionChanged : Boolean;
-			
 			private var _confirm : Boolean;
 			
 			//--------------------------------------------------------------------------
@@ -160,28 +149,20 @@
 				switch(format.toLowerCase())
 				{
 					case ImageFormat.PNG:
-					{
 						pngFormatRadioButton.selected = true;
 						break;
-					}
 						
 					case ImageFormat.BMP:
-					{
 						bmpFormatRadioButton.selected = true;
 						break;
-					}
 						
 					case ImageFormat.JPG:
-					{
 						jpgFormatRadioButton.selected = true;
 						break;
-					}
 						
 					case OTFormat.OBD:
-					{
 						obdFormatRadioButton.selected = true;
 						break;
-					}
 				}
 			}
 			

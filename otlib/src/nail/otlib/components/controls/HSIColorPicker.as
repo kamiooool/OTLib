@@ -136,7 +136,6 @@ package nail.otlib.components.controls
 			{
 				_color = value;
 				invalidateDisplayList();
-				
 				dispatchEvent(new Event(Event.CHANGE));
 			}
 		}

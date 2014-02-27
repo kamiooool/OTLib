@@ -46,26 +46,15 @@ package nail.otlib.things
 		//--------------------------------------------------------------------------
 		
 		static public const TWO_HAND_WEAPON : uint = 1;
-		
 		static public const HELMET : uint = 2;
-		
 		static public const AMULET : uint = 3;
-		
 		static public const BACKPACK : uint = 4;
-		
 		static public const ARMOR : uint = 5;
-		
 		static public const SHIELD : uint = 6;
-		
 		static public const ONE_HAND_WEAPON : uint = 7;
-		
 		static public const LEGS : uint = 8;
-		
 		static public const BOOTS : uint = 9;
-		
 		static public const RING : uint = 10;
-		
 		static public const ARROW : uint = 11;
-		
 	}
 }
