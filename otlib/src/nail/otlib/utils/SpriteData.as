@@ -86,6 +86,16 @@ package nail.otlib.utils
 			return null;
 		}
 		
+		public function isEmpty() : Boolean
+		{
+			if (pixels != null)
+			{
+				BITMAP.setPixels(RECTANGLE, pixels);
+				return SpriteUtils.isEmpty(BITMAP);
+			}
+			return true;
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		// STATIC
@@ -95,5 +105,14 @@ package nail.otlib.utils
 		static private const RECTANGLE : Rectangle = new Rectangle(0, 0, Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS);
 		static private const POINT : Point = new Point();
 		static private const BITMAP : BitmapData = new BitmapData(Sprite.SPRITE_PIXELS, Sprite.SPRITE_PIXELS, true, 0xFFFF00FF);
+		
+		static public function createSpriteData() : SpriteData
+		{
+			var data : SpriteData;
+			data = new SpriteData();
+			data.id = 0;
+			data.pixels = BITMAP.getPixels(RECTANGLE);
+			return data;
+		}
 	}
 }

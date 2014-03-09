@@ -326,6 +326,108 @@ package nail.otlib.utils
 			return bitmap;
 		}
 		
+		static public function setSpriteSheet(bitmap:BitmapData, thing:ThingType) : ThingData
+		{
+			var rectSize : Rect;
+			var width : uint;
+			var height : uint;
+			var layers : uint;
+			var patternX : uint;
+			var patternY : uint;
+			var patternZ : uint;
+			var frames : uint;
+			var size : uint;
+			var x : uint;
+			var y : uint;
+			var z : uint;
+			var l : uint;
+			var f : uint;
+			var w : uint;
+			var h : uint;
+			var fx : int;
+			var fy : int;
+			var px : int;
+			var py : int;
+			var index : uint;
+			var totalX : int;
+			var totalY : int;
+			var pixelsWidth : int;
+			var pixelsHeight : int;
+			var sprites : Vector.<SpriteData>;
+			var spriteData : SpriteData;
+			var bmp : BitmapData;
+			
+			if (bitmap == null)
+			{
+				throw new ArgumentError("Parameter bitmap cannot be null.");
+			}
+			
+			if (thing == null)
+			{
+				throw new ArgumentError("Parameter thing cannot be null.");
+			}
+			
+			rectSize = SpriteUtils.getSpriteSheetSize(thing);
+			if (bitmap.width != rectSize.width || bitmap.height != rectSize.height)
+			{
+				return null;
+			}
+			
+			bitmap = SpriteUtils.removeMagenta(bitmap);
+			width = thing.width;
+			height = thing.height;
+			layers = thing.layers;
+			patternX = thing.patternX;
+			patternY = thing.patternY;
+			patternZ = thing.patternZ;
+			frames = thing.frames;
+			size = Sprite.SPRITE_PIXELS;
+			totalX = patternZ * patternX * layers;
+			totalY = frames * patternY;
+			pixelsWidth  = width * size
+			pixelsHeight = height * size;
+			sprites = new Vector.<SpriteData>(width * height * layers * patternX * patternY * patternZ * frames);
+			POINT.setTo(0, 0);
+			
+			for (f = 0; f < frames; f++)
+			{
+				for (z = 0; z < patternZ; z++)
+				{
+					for (y = 0; y < patternY; y++)
+					{
+						for (x = 0; x < patternX; x++)
+						{
+							for (l = 0; l < layers; l++)
+							{
+								index = getTextureIndex(thing, f, x, y, z, l);
+								fx = (index % totalX) * pixelsWidth;
+								fy = Math.floor(index / totalX) * pixelsHeight;
+								
+								for (w = 0; w < width; w++)
+								{
+									for (h = 0; h < height; h++)
+									{
+										index = getSpriteIndex(thing, w, h, l, x, y, z, f);
+										px = ((width - w - 1) * size);
+										py = ((height - h - 1) * size);
+										RECTANGLE.setTo(px + fx, py + fy, size, size);
+										bmp = new BitmapData(size, size, true, 0x00000000);
+										bmp.copyPixels(bitmap, RECTANGLE, POINT);
+										spriteData = new SpriteData();
+										spriteData.pixels = bmp.getPixels(bmp.rect);
+										spriteData.id = 0xFFFFFF;
+										sprites[index] = spriteData;
+										thing.spriteIndex[index] = spriteData.id;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			return new ThingData(thing, sprites);
+		}
+		
 		static private function getTextureIndex(thing:ThingType, f:int, x:int, y:int, z:int, l:int) : int
 		{
 			return (((f % thing.frames * thing.patternZ + z) * thing.patternY + y) * thing.patternX + x) * thing.layers + l;

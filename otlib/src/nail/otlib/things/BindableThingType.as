@@ -285,14 +285,6 @@ package nail.otlib.things
 			dispatchEvent(event);
 		}
 		
-		public function setSpritesCount(length:uint) : void
-		{
-			this.spriteIndex.length = length;
-			this.sprites.length = length;
-			
-			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE));
-		}
-		
 		public function getSpriteBitmap(index:uint) : BitmapData
 		{
 			if (sprites != null && index < sprites.length && sprites[index] != null)
@@ -353,7 +345,7 @@ package nail.otlib.things
 				}
 			}	
 			
-			if (thing.spriteIndex)
+			if (thing.spriteIndex != null)
 			{
 				this.spriteIndex = thing.spriteIndex.concat();
 			}
@@ -391,6 +383,15 @@ package nail.otlib.things
 				thing.spriteIndex = this.spriteIndex.concat();
 			}
 			return true;
+		}
+		
+		public function updateSpriteCount() : void
+		{
+			var spriteCount : uint;
+			spriteCount = this.width * this.height * this.layers * this.patternX * this.patternY * this.patternZ * this.frames;
+			this.spriteIndex.length = spriteCount;
+			this.sprites.length = spriteCount;
+			dispatchEvent(new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE));
 		}
 		
 		//--------------------------------------------------------------------------

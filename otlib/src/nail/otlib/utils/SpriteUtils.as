@@ -28,6 +28,9 @@ package nail.otlib.utils
 	import flash.geom.Rectangle;
 	
 	import nail.errors.AbstractClassError;
+	import nail.otlib.geom.Rect;
+	import nail.otlib.sprites.Sprite;
+	import nail.otlib.things.ThingType;
 	import nail.utils.BitmapUtils;
 
 	public final class SpriteUtils
@@ -70,6 +73,20 @@ package nail.otlib.utils
 				return true;
 			}
 			return false;
+		}
+		
+		static public function getSpriteSheetSize(thing:ThingType) : Rect
+		{
+			var totalX : uint;
+			var totalY : uint;
+			var rect : Rect;
+			
+			totalX = thing.patternZ * thing.patternX * thing.layers;
+			totalY = thing.frames * thing.patternY;
+			rect = new Rect();
+			rect.width = (totalX * thing.width) * Sprite.SPRITE_PIXELS;
+			rect.height = (totalY * thing.height) * Sprite.SPRITE_PIXELS;
+			return rect;
 		}
 	}
 }

@@ -56,6 +56,7 @@
 			import nail.otlib.sprites.Sprite;
 			import nail.otlib.things.BindableThingType;
 			import nail.otlib.things.ThingCategory;
+			import nail.otlib.things.ThingType;
 			import nail.otlib.utils.SpriteData;
 			import nail.otlib.utils.ThingData;
 			
@@ -77,6 +78,7 @@
 			private var _point : Point;
 			private var _patternX : uint;
 			private var _patternY : uint;
+			private var _invalidateThingData : Boolean;
 			
 			//--------------------------------------------------------------------------
 			//
@@ -102,6 +104,47 @@
 				return false;
 			}	
 			
+			public function getThingTypeResult() : ThingType
+			{
+				var thing : ThingType;
+				
+				if (_thingData != null)
+				{
+					thing = new ThingType();
+					if (_thingBinding.copyTo(thing))
+					{
+						return thing;
+					}
+				}
+				return null;
+			}
+			
+			public function updatePreview() : void
+			{
+				if (_thingData != null)
+				{
+					animationCountLabel.text = animationSlider.value + '/' + animationSlider.maximum;
+					addonCountLabel.text = addonsSlider.value + '/' + addonsSlider.maximum;
+					mountCountLabel.text = mountSlider.value + '/' + mountSlider.maximum;
+					
+					if (_thingData.category == ThingCategory.OUTFIT || 
+						_thingData.category == ThingCategory.MISSILE)
+					{
+						updateViewWithDirection()
+					}
+					else
+					{
+						updateView();
+					}
+				}
+			}
+			
+			public function invalidateThingData() : void
+			{
+				_invalidateThingData = true;
+				invalidateProperties();
+			}
+			
 			//--------------------------------------
 			// Override Protected
 			//--------------------------------------
@@ -114,6 +157,12 @@
 				{
 					setThingData(_thingData);
 					_thingDataChanged = false;
+				}
+				
+				if (_invalidateThingData)
+				{
+					_changed = true;
+					_invalidateThingData = false;
 				}
 			}
 			
@@ -152,32 +201,12 @@
 					}
 					else
 					{
-						update();
+						updatePreview();
 					}
 				}
 				
 				_changed = false;
 				_loading = false;
-			}
-			
-			private function update() : void
-			{
-				if (_thingData != null)
-				{
-					animationCountLabel.text = animationSlider.value + '/' + animationSlider.maximum;
-					addonCountLabel.text = addonsSlider.value + '/' + addonsSlider.maximum;
-					mountCountLabel.text = mountSlider.value + '/' + mountSlider.maximum;
-					
-					if (_thingData.category == ThingCategory.OUTFIT || 
-						_thingData.category == ThingCategory.MISSILE)
-					{
-						updateViewWithDirection()
-					}
-					else
-					{
-						updateView();
-					}
-				}
 			}
 			
 			private function updateViewWithDirection() : void
@@ -479,7 +508,7 @@
 					}
 				}
 				
-				update();
+				updatePreview();
 			}
 			
 			//--------------------------------------
@@ -539,7 +568,7 @@
 				if (spriteData != null)
 				{
 					_thingBinding.setSprite(index, spriteData);
-					update();
+					updatePreview();
 				}
 			}
 			
@@ -557,20 +586,22 @@
 				if (!_loading)
 				{
 					_changed = true;
-					evt = new ThingEditorEvent(ThingEditorEvent.THING_PROPERTY_CHANGE, this.thingData);
-					evt.property = BindableThingType.toLabel(event.property as String);
-					evt.oldValue = event.oldValue;
-					evt.newValue = event.newValue;
-					dispatchEvent(evt);
+					
+					if (event.property != null)
+					{
+						evt = new ThingEditorEvent(ThingEditorEvent.THING_PROPERTY_CHANGE, this.thingData);
+						evt.property = BindableThingType.toLabel(event.property as String);
+						evt.oldValue = event.oldValue;
+						evt.newValue = event.newValue;
+						dispatchEvent(evt);
+					}
 				}
 			}
 			
 			protected function textureUpdate(event:Event) : void
 			{
-				var totalSprites : uint;
-				totalSprites = _thingBinding.width * _thingBinding.height * _thingBinding.layers * _thingBinding.patternX * _thingBinding.patternY * _thingBinding.patternZ * _thingBinding.frames;			
-				_thingBinding.setSpritesCount(totalSprites);
-				update();
+				_thingBinding.updateSpriteCount();
+				updatePreview();
 			}
 			
 			protected function directionButtonClickHandler(event:MouseEvent) : void
@@ -581,6 +612,11 @@
 			//--------------------------------------
 			// Getters / Setters 
 			//--------------------------------------
+			
+			public function get bindableThingType() : BindableThingType
+			{
+				return _thingBinding;
+			}
 			
 			public function get thingData() : ThingData
 			{
@@ -744,7 +780,7 @@
 						<s:Label text="@Resource(key='tte.animation', bundle='otlibControls')"/>
 						<otlib:PatternSlider id="animationSlider"
 											 maximum="{_thingBinding.frames - 1}"
-											 change="update()"/>
+											 change="updatePreview()"/>
 						<s:Label id="animationCountLabel"
 								 minWidth="30"/>
 					</s:HGroup>
@@ -757,7 +793,7 @@
 						<s:Label text="@Resource(key='tte.addon', bundle='otlibControls')"/>
 						<otlib:PatternSlider id="addonsSlider"
 											 maximum="{_thingBinding.patternY - 1}"
-											 change="update()"/>
+											 change="updatePreview()"/>
 						<s:Label id="addonCountLabel"
 								 minWidth="30"/>
 					</s:HGroup>
@@ -769,7 +805,7 @@
 						<s:Label text="@Resource(key='tte.mount', bundle='otlibControls')"/>
 						<otlib:PatternSlider id="mountSlider"
 											 maximum="{_thingBinding.patternZ - 1}"
-											 change="update()"/>
+											 change="updatePreview()"/>
 						<s:Label id="mountCountLabel"
 								 minWidth="30"/>
 					</s:HGroup>	
@@ -777,7 +813,7 @@
 					<s:CheckBox id="blendLayerCheckBox"
 								label="@Resource(key='tte.blend-layer', bundle='otlibControls')"
 								visible="{_thingBinding.layers > 1}"
-								change="update()"/>
+								change="updatePreview()"/>
 					
 					<s:CheckBox id="showGridCheckBox"
 								label="@Resource(key='tte.show-grid', bundle='otlibControls')"
