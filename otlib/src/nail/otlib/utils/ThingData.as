@@ -454,13 +454,12 @@ package nail.otlib.utils
 				spriteData = data.sprites[index];
 				if (spriteData != null && spriteData.pixels != null)
 				{
-					POINT.x = x;
-					POINT.y = y;
-					
 					bmp = spriteData.getBitmap();
 					if (bmp != null)
 					{
 						spriteData.pixels.position = 0;
+						RECTANGLE.setTo(0, 0, bmp.width, bmp.height);
+						POINT.setTo(x, y);
 						bitmap.copyPixels(bmp, RECTANGLE, POINT, null, null, true);
 					}
 				}
