@@ -90,7 +90,7 @@ package nail.otlib.sprites
 		// Public
 		//--------------------------------------
 
-		public function load(file:File, version:AssetsVersion) : void
+		public function load(file:File, version:AssetsVersion, enableSpritesU32:Boolean = false) : void
 		{
 			var loader : URLLoader;
 			
@@ -140,7 +140,7 @@ package nail.otlib.sprites
 				_rawBytes.endian = Endian.LITTLE_ENDIAN;
 				_signature = _rawBytes.readUnsignedInt();
 				
-				if (version.value >= 960)
+				if (enableSpritesU32 || version.value >= 960)
 				{
 					_spritesCount = _rawBytes.readUnsignedInt();
 					_headSize = HEAD_SIZE_U32;
@@ -165,7 +165,7 @@ package nail.otlib.sprites
 			}
 		}
 		
-		public function createNew(version:AssetsVersion) : Boolean
+		public function createNew(version:AssetsVersion, enableSpritesU32:Boolean = false) : Boolean
 		{
 			if (version == null)
 			{
@@ -187,7 +187,7 @@ package nail.otlib.sprites
 			_rawBytes.endian = Endian.LITTLE_ENDIAN;
 			_signature = version.sprSignature;
 			_spritesCount = 0;
-			_headSize = version.value >= 960 ? HEAD_SIZE_U32 : HEAD_SIZE_U16;
+			_headSize = (enableSpritesU32 || version.value >= 960) ? HEAD_SIZE_U32 : HEAD_SIZE_U16;
 			_blankSprite = new Sprite(0);	
 			_sprites = new Dictionary();
 			_sprites[0] = _blankSprite;
@@ -432,7 +432,10 @@ package nail.otlib.sprites
 			return sprite;
 		}
 		
-		public function compile(file:File, version:AssetsVersion) : Boolean
+		public function compile(file:File,
+								version:AssetsVersion,
+								enableSpritesU32:Boolean = false,
+								forceCompile:Boolean = false) : Boolean
 		{
 			var stream : FileStream;
 			var currentSprite : uint;
@@ -440,6 +443,8 @@ package nail.otlib.sprites
 			var addressPosition : uint; 
 			var sprite : Sprite;
 			var dispatchProgess : Boolean;
+			var headSize : uint;
+			var count : uint;
 			
 			if (!file)
 			{
@@ -470,7 +475,7 @@ package nail.otlib.sprites
 			stream.endian = Endian.LITTLE_ENDIAN;
 			
 			// If is unmodified and the version is equal only save raw bytes.
-			if (!_changed && version.value == _version.value)
+			if (!_changed && !forceCompile && version.value == _version.value)
 			{
 				stream.writeBytes(_rawBytes, 0, _rawBytes.bytesAvailable);
 				stream.close();
@@ -481,21 +486,25 @@ package nail.otlib.sprites
 			stream.writeUnsignedInt(version.sprSignature); // Write spr signature.
 			
 			// Write sprites count.
-			if (version.value >= 960)
+			if (enableSpritesU32 || version.value >= 960)
 			{
-				stream.writeUnsignedInt(_spritesCount);
+				count = _spritesCount;
+				headSize = HEAD_SIZE_U32;
+				stream.writeUnsignedInt(count);
 			}
 			else 
 			{
-				stream.writeShort(_spritesCount);
+				count = _spritesCount >= 0xFFFF ? 0xFFFE : _spritesCount;
+				headSize = HEAD_SIZE_U16;
+				stream.writeShort(count);
 			}
 			
 			addressPosition = stream.position;
-			offset = (_spritesCount * 4) + _headSize;
+			offset = (count * 4) + headSize;
 			dispatchProgess = this.hasEventListener(ProgressEvent.PROGRESS);
 			
 			currentSprite = 1;
-			while (currentSprite <= _spritesCount)
+			while (currentSprite <= count)
 			{
 				stream.position = addressPosition;
 				sprite = getSprite(currentSprite);
@@ -515,7 +524,7 @@ package nail.otlib.sprites
 				
 				if (dispatchProgess)
 				{
-					dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, currentSprite, _spritesCount));
+					dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, currentSprite, count));
 				}
 			}
 			stream.close();
@@ -585,6 +594,14 @@ package nail.otlib.sprites
 			return _loaded;
 		}
 		
+		public function get isFull() : Boolean
+		{
+			if (_loaded && _version.value < 960 && _spritesCount == 0xFFFF)
+			{
+				return true;
+			}
+			return false;
+		}
 		//--------------------------------------------------------------------------
 		//
 		// STATIC

@@ -86,7 +86,7 @@ package nail.otlib.things
 		//  Public
 		//---------------------------------- 
 		
-		public function load(file:File, version:AssetsVersion) : void
+		public function load(file:File, version:AssetsVersion, enableSpritesU32:Boolean = false) : void
 		{
 			var stream : FileStream;
 			
@@ -117,7 +117,7 @@ package nail.otlib.things
 				stream = new FileStream();
 				stream.open(file, FileMode.READ);
 				stream.endian = Endian.LITTLE_ENDIAN;
-				readBytes(stream, version);
+				readBytes(stream, version, enableSpritesU32);
 				stream.close();
 			} 
 			catch(error:Error)
@@ -365,7 +365,7 @@ package nail.otlib.things
 			return true;
 		}
 		
-		public function compile(file:File, version:AssetsVersion) : Boolean
+		public function compile(file:File, version:AssetsVersion, enableSpritesU32:Boolean = false) : Boolean
 		{
 			var stream : FileStream;
 			
@@ -395,10 +395,10 @@ package nail.otlib.things
 			stream.writeShort(_outfitsCount); // Write outfits count
 			stream.writeShort(_effectsCount); // Write effects count
 			stream.writeShort(_missilesCount); // Write missiles count
-			writeThingList(stream, _items, MIN_ITEM_ID, _itemsCount, version, true);
-			writeThingList(stream, _outfits, MIN_OUTFIT_ID, _outfitsCount, version);
-			writeThingList(stream, _effects, MIN_EFFECT_ID, _effectsCount, version);
-			writeThingList(stream, _missiles, MIN_MISSILE_ID, _missilesCount, version);
+			writeThingList(stream, _items, MIN_ITEM_ID, _itemsCount, version, enableSpritesU32, true);
+			writeThingList(stream, _outfits, MIN_OUTFIT_ID, _outfitsCount, version, enableSpritesU32);
+			writeThingList(stream, _effects, MIN_EFFECT_ID, _effectsCount, version, enableSpritesU32);
+			writeThingList(stream, _missiles, MIN_MISSILE_ID, _missilesCount, version, enableSpritesU32);
 			stream.close();
 			return true;
 		}
@@ -503,7 +503,7 @@ package nail.otlib.things
 		// Protected
 		//--------------------------------------
 		
-		protected function readBytes(stream:FileStream, version:AssetsVersion) : void
+		protected function readBytes(stream:FileStream, version:AssetsVersion, enableSpritesU32:Boolean) : void
 		{
 			if (stream.bytesAvailable < 12)
 			{
@@ -523,25 +523,25 @@ package nail.otlib.things
 			_progressCount = 0;
 			
 			// Load item list.
-			if (loadThingTypeList(stream, version, _items, MIN_ITEM_ID, _itemsCount, ThingCategory.ITEM) == false)
+			if (loadThingTypeList(stream, version, enableSpritesU32, _items, MIN_ITEM_ID, _itemsCount, ThingCategory.ITEM) == false)
 			{
 				throw new Error("Items list cannot be created.");
 			}
 			
 			// Load outfit list.
-			if (loadThingTypeList(stream, version, _outfits, MIN_OUTFIT_ID, _outfitsCount, ThingCategory.OUTFIT) == false)
+			if (loadThingTypeList(stream, version, enableSpritesU32, _outfits, MIN_OUTFIT_ID, _outfitsCount, ThingCategory.OUTFIT) == false)
 			{
 				throw new Error("Outfits list cannot be created.");
 			}
 			
 			// Load effect list.
-			if (loadThingTypeList(stream, version, _effects, MIN_EFFECT_ID, _effectsCount, ThingCategory.EFFECT) == false)
+			if (loadThingTypeList(stream, version, enableSpritesU32, _effects, MIN_EFFECT_ID, _effectsCount, ThingCategory.EFFECT) == false)
 			{
 				throw new Error("Effects list cannot be created.");
 			}
 			
 			// Load missile list.
-			if (loadThingTypeList(stream, version, _missiles, MIN_MISSILE_ID, _missilesCount, ThingCategory.MISSILE) == false)
+			if (loadThingTypeList(stream, version, enableSpritesU32, _missiles, MIN_MISSILE_ID, _missilesCount, ThingCategory.MISSILE) == false)
 			{
 				throw new Error("Missiles list cannot be created.");
 			}
@@ -552,7 +552,13 @@ package nail.otlib.things
 			}
 		}
 		
-		protected function loadThingTypeList(stream:FileStream, version:AssetsVersion, list:Dictionary, minID:uint, maxID:uint, category:String) : Boolean
+		protected function loadThingTypeList(stream:FileStream,
+											 version:AssetsVersion,
+											 enableSpritesU32:Boolean,
+											 list:Dictionary,
+											 minID:uint,
+											 maxID:uint,
+											 category:String) : Boolean
 		{
 			var thing : ThingType;
 			var id : int;
@@ -563,7 +569,7 @@ package nail.otlib.things
 			
 			oldVersions = (version.value <= 854);
 			newVersions = (version.value >= 1010);
-			isU32 = (version.value >= 960);
+			isU32 = (enableSpritesU32 || version.value >= 960);
 			dispatchProgress = this.hasEventListener(ProgressEvent.PROGRESS);
 			
 			for (id = minID; id <= maxID; id++)
@@ -1219,7 +1225,13 @@ package nail.otlib.things
 			return true;
 		}
 		
-		protected function writeThingList(stream:FileStream, list:Dictionary, minId:uint, maxId:uint, version:AssetsVersion, isItems:Boolean = false) : void
+		protected function writeThingList(stream:FileStream,
+										  list:Dictionary,
+										  minId:uint,
+										  maxId:uint,
+										  version:AssetsVersion,
+										  enableSpritesU32:Boolean,
+										  isItems:Boolean = false) : void
 		{
 			var i : int;
 			var thing : ThingType;
@@ -1230,7 +1242,7 @@ package nail.otlib.things
 			
 			oldVersions = (version.value <= 854);
 			newVersions = (version.value >= 1010);
-			isU32 = (version.value >= 960);
+			isU32 = (enableSpritesU32 || version.value >= 960);
 			dispatchProgress = this.hasEventListener(ProgressEvent.PROGRESS);
 			
 			for (i = minId; i <= maxId; i++)
@@ -1250,7 +1262,7 @@ package nail.otlib.things
 					{
 						writeProperties2(stream, thing);
 					}
-						
+					
 					writeSprites(stream, thing, isU32);
 				}
 				else

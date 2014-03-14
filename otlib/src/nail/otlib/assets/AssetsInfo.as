@@ -45,6 +45,7 @@ package nail.otlib.assets
 		public var sprSignature : uint;
 		public var minSpriteId : uint;
 		public var maxSpriteId : uint;
+		public var extended : Boolean;
 		
 		//--------------------------------------------------------------------------
 		//
