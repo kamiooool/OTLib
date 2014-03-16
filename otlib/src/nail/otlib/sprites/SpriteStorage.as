@@ -333,10 +333,24 @@ package nail.otlib.sprites
 		public function getPixels(id:uint) : ByteArray
 		{
 			var sprite : Sprite;
-			sprite = getSprite(id);
-			if (sprite != null)
+			var pixels : ByteArray;
+			
+			if (loaded)
 			{
-				return sprite.getPixels();
+				sprite = getSprite(id);
+				if (sprite != null)
+				{
+					try
+					{
+						pixels =  sprite.getPixels();
+					}
+					catch (error:Error)
+					{
+						dispatchError(error.getStackTrace(), error.errorID);
+						return _blankSprite.getPixels();
+					}
+					return pixels;
+				}
 			}
 			return null;
 		}
